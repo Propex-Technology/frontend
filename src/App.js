@@ -2,7 +2,8 @@ import React from "react";
 import {
   Route,
   Switch,
-  HashRouter as Router,Redirect
+  Router,
+  Redirect
 } from "react-router-dom";
 
 import { ThemeProvider } from '@mui/material/styles';
