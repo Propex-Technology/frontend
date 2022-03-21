@@ -2,7 +2,7 @@ import React from "react";
 import {
   Route,
   Switch,
-  Router,
+  BrowserRouter,
   Redirect
 } from "react-router-dom";
 
@@ -27,6 +27,8 @@ import Landing10 from "./home/Landing10";
 import Landing11 from "./home/Landing11";
 import Landing12 from "./home/Landing12";
 
+import Marketplace from "./pages/Marketplace";
+
 function App() {
   return (
     <ThemeProvider theme={Theme}>
@@ -35,7 +37,7 @@ function App() {
           className="h-full-screen scrollable-content"
           option={{ suppressScrollX: true }}
         >
-           <Router basename="/">
+           <BrowserRouter basename="/">
             <Switch>
               <Route path="/demos" component={Demo} exact />
               <Route path="/landing1" component={Landing1} />
@@ -50,10 +52,10 @@ function App() {
               <Route path="/landing10" component={Landing10} />
               <Route path="/landing11" component={Landing11} />
               <Route path="/landing12" component={Landing12} />
+              <Route path="/marketplace" component={Marketplace} />
               <Redirect path="/" exact to="demos" />
-              {/* <Route component={Error} /> */}
             </Switch>
-          </Router>
+          </BrowserRouter>
         </Scrollbar>
       </GlobalCss>
     </ThemeProvider>

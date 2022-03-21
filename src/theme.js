@@ -1,10 +1,10 @@
 import { createTheme } from '@mui/material/styles';
-import { red, orange, indigo } from '@mui/material/colors';
+import { red, blueGrey, blue,  } from '@mui/material/colors';
 const themeOptions = {
   palette: {
     type: "light",
-    primary: indigo,
-    secondary: orange,
+    primary: blueGrey, //"#3347ff",
+    secondary: blue, // "#3898EC",
     error: red,
     contrastThreshold: 3,
     // Used to shift a color's luminance by approximately
