@@ -8,7 +8,7 @@ export const landingStyles = makeStyles(({ palette, ...theme }) => ({
     ".landing div, .landing section": { boxSizing: "border-box" },
     ".section-intro": { paddingTop: "7.5rem !important" },
     ".section": {
-      padding: "1rem 0",
+      padding: "2rem 0",
 
       "& .section__header": {
         margin: "0 0 32px",
