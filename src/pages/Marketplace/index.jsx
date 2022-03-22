@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { scrollTo } from "../../utils";
-import Intro2 from "../../home/sections/Intro2";
+import TitleBlock from "./TitleBlock";
 import Portfolio2 from "../../home/sections/Portfolio2";
 import Testimonial2 from "../../home/sections/Testimonial2";
 import Services2 from "../../home/sections/Services2";
@@ -17,13 +17,8 @@ const Marketplace = () => {
   return (
     <div className="landing">
       <Header />
-      <Intro2 />
-      <Portfolio2 />
-      <Testimonial2 />
-      <Services2 />
-      <CallToAction1 bg="./assets/images/home-bg-black.png" />
-      <Pricing1 />
-      {/* <Contact1 /> */}
+      <TitleBlock />
+      
       <Footer1 />
     </div>
   );

@@ -50,7 +50,7 @@ const Header = () => {
     >
       <div className="container header-container">
         <div className="brand">
-          <img src="./assets/images/react-logo.svg" alt="" />
+          <img src="./assets/images/logos/propex-logo.png" alt="" />
         </div>
         <ul className="navigation">
           <li>

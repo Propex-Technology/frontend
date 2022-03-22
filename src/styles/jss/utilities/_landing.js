@@ -8,7 +8,7 @@ export const landingStyles = makeStyles(({ palette, ...theme }) => ({
     ".landing div, .landing section": { boxSizing: "border-box" },
     ".section-intro": { paddingTop: "7.5rem !important" },
     ".section": {
-      padding: "5rem 0",
+      padding: "1rem 0",
 
       "& .section__header": {
         margin: "0 0 32px",
@@ -36,7 +36,7 @@ export const landingStyles = makeStyles(({ palette, ...theme }) => ({
       background: "var(--bg-paper)",
       left: "0",
       right: "0",
-      padding: "20px 0",
+      padding: "10px 0",
       transition: "padding 0.3s linear",
       zIndex: "999999",
     },
@@ -81,7 +81,7 @@ export const landingStyles = makeStyles(({ palette, ...theme }) => ({
         height: "100vh",
         left: "auto",
         right: "0",
-        padding: "20px 0 !important",
+        padding: "10px 0 !important",
         boxShadow:
           "-2px 0 4px rgba(0, 0, 0, 0.14), -2px 4px 8px rgba(0, 0, 0, 0.28) !important",
         transition: "all 0.3s ease-in-out",
@@ -109,13 +109,13 @@ export const landingStyles = makeStyles(({ palette, ...theme }) => ({
         height: "100%",
       },
       ".header .header-container .brand": {
-        padding: "0 20px 20px",
+        padding: "0 10px 10px",
         width: "100%",
       },
       ".header .header-container ul.navigation": { margin: "0", width: "100%" },
       ".header .header-container ul.navigation li": { display: "block" },
       ".header .header-container ul.navigation li a": {
-        padding: "15px 20px",
+        padding: "15px 10px",
         borderRadius: "0",
       },
     },
