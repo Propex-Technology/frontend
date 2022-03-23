@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import { scrollTo } from "../../utils";
-import TitleBlock from "./TitleBlock";
-import MarketCards from "./MarketCards";
+import TitleBlock from "../Marketplace/TitleBlock";
 import Footer1 from "../../home/sections/Footer1";
 import Header from "../../components/Header";
 
-const Marketplace = () => {
+const Asset = () => {
   useEffect(() => {
     scrollTo("root");
   }, [scrollTo]);
@@ -14,10 +13,9 @@ const Marketplace = () => {
     <div className="landing">
       <Header />
       <TitleBlock />
-      <MarketCards />
       <Footer1 />
     </div>
   );
 };
 
-export default Marketplace;
+export default Asset;

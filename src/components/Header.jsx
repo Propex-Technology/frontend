@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { debounce, classList } from "../../utils";
+import { debounce, classList } from "../utils";
 import { Icon, IconButton } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import Link from '@mui/material/Link';

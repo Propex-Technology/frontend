@@ -27,7 +27,8 @@ import Landing10 from "./home/Landing10";
 import Landing11 from "./home/Landing11";
 import Landing12 from "./home/Landing12";
 
-import Marketplace from "./pages/Marketplace";
+import MarketplacePage from "./pages/Marketplace";
+import AssetPage from "./pages/Asset";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         >
            <BrowserRouter basename="/">
             <Switch>
+              {/* TODO: Remove all of the template paths */}
               <Route path="/demos" component={Demo} exact />
               <Route path="/landing1" component={Landing1} />
               <Route path="/landing2" component={Landing2} />
@@ -52,7 +54,13 @@ function App() {
               <Route path="/landing10" component={Landing10} />
               <Route path="/landing11" component={Landing11} />
               <Route path="/landing12" component={Landing12} />
-              <Route path="/marketplace" component={Marketplace} />
+
+              
+
+              <Route path="/marketplace" component={MarketplacePage} />
+              <Route path="/asset" component={AssetPage}>
+                {/* I think you add more routes here */}
+              </Route>
               <Redirect path="/" exact to="demos" />
             </Switch>
           </BrowserRouter>
