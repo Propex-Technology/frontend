@@ -1,9 +1,13 @@
 import { createTheme } from '@mui/material/styles';
-import { red, blueGrey, blue,  } from '@mui/material/colors';
+import { red, blue } from '@mui/material/colors';
+
+const PropexBlue = blue;
+for(let i in PropexBlue) PropexBlue[i] = "#3347ff";
+
 const themeOptions = {
   palette: {
     type: "light",
-    primary: blueGrey, //"#3347ff",
+    primary: PropexBlue,
     secondary: blue, // "#3898EC",
     error: red,
     contrastThreshold: 3,

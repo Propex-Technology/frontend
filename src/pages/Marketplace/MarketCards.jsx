@@ -1,16 +1,14 @@
-  
+
 import React, { useState } from "react";
 import {
-  Switch,
-  FormControlLabel,
   Grid,
   Card,
   CardContent,
-  Button,
-  Divider,
+  CardMedia,
+  Slider,
 } from "@mui/material";
-import { makeStyles } from '@mui/styles';
-
+import { withStyles, makeStyles } from '@mui/styles';
+import { backendURL } from "../../contracts";
 import clsx from "clsx";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -25,142 +23,117 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
       },
     },
   },
+  wid100: {
+    width: "100%"
+  },
+  pb0: {
+    paddingBottom: "0px !important"
+  }
 }));
 
-const MarketCards = () => {
-  const [state, setState] = useState({
-    switchToggled: false,
-    plan: "Mo",
-    off: 10,
-  });
+const SliderNoThumb = withStyles(theme => ({
+  thumb: {
+    display: "none !important"
+  }
+}))(Slider);
 
+const MarketCards = () => {
   const classes = useStyles();
 
-  const pricingList = [
-    {
-      title: "Developer",
-      subtitle: "For New Developer",
-      price: "Free",
-      allowedOfferIndexList: [0, 1, 2],
-    },
-    {
-      title: "Starter",
-      subtitle: "For Professional Developer",
-      price: 30,
-      allowedOfferIndexList: [0, 1, 2, 3],
-    },
-    {
-      title: "Business",
-      subtitle: "For Small Businesses",
-      price: 60,
-      allowedOfferIndexList: [0, 1, 2, 3, 4],
-    },
-    {
-      title: "Enterprise",
-      subtitle: "For Large companies",
-      price: 160,
-      allowedOfferIndexList: [0, 1, 2, 3, 4, 5],
-    },
-  ];
-
-  const offerList = [
-    "10GB of Bandwidth",
-    "Max 50 connection",
-    "512MB RAM",
-    "Unlimited access",
-    "Unlimited User",
-    "Data analytics",
-  ];
-
-  const getPriceList = () => {
-    let { switchToggled, off } = state;
-
-    if (switchToggled) {
-      return [...pricingList].map((item) => {
-        let plan = { ...item };
-        let { price } = plan;
-
-        if (price !== "Free") {
-          price = price * 12;
-          price = Math.round(price - (price * off) / 100);
-        }
-        plan.price = price;
-        return plan;
-      });
-    }
-    return pricingList;
-  };
-
-  const handleSwitchChange = () => {
-    let { switchToggled, plan } = state;
-    switchToggled = !switchToggled;
-    switchToggled ? (plan = "Yr") : (plan = "Mo");
-    setState({ ...state, switchToggled, plan });
-  };
+  // Fetch Data from Backend
+  let [assetList, setAssetList] = useState(null);
+  fetch(`${backendURL}/assets/get/shortlist/30/0`)
+    .then(res => res.json())
+    .then(res => {
+      //if (res.success) setAssetList(res.data);
+      //else setAssetList(-1);
+    });
 
   return (
-    <div className="section section-pricing1" id="pricing1">
+    <div className="section section-market-cards" id="market-cards">
       <div className="container">
-        <div className="mb-6">
-          <h2>Choose a Plan</h2>
-          <FormControlLabel
-            control={
-              <Switch
-                color="primary"
-                checked={state.switchState}
-                onChange={handleSwitchChange}
-              />
-            }
-            label="Get up to 10% discount annually"
-          />
-        </div>
-
         <Grid container spacing={2}>
-          {getPriceList().map((plan) => {
-            let { title, subtitle, price, allowedOfferIndexList } = plan;
-
-            return (
-              <Grid item lg={3} md={3} sm={6} xs={12} key={title}>
-                <Card className={clsx("text-center card", classes.card)}>
-                  <div
-                    className={clsx({
-                      "card-header flex-column items-center p-3": true,
-                      "card-header-highlighted": title === "Starter",
-                    })}
-                  >
-                    <span className="text-16">{title}</span>
-                    <span className="text-small">{subtitle}</span>
-                  </div>
-                  <Divider className="mb-2" />
-                  <CardContent className="pricing1__card-content">
-                    <h1 className="mt-0 mb-4 text-32">
-                      {typeof price == "number"
-                        ? `$ ${price} /${state.plan}`
-                        : "Free"}
-                    </h1>
-
-                    {offerList.map((offer, index) => (
-                      <div
-                        key={index}
-                        className={clsx({
-                          "px-3 py-2": true,
-                          "text-muted": !allowedOfferIndexList.includes(index),
-                        })}
-                      >
-                        {offer}
-                      </div>
-                    ))}
-
-                    <div className="text-center mt-4">
-                      <Button color="secondary" variant="contained">
-                        Choose
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Grid>
-            );
-          })}
+        <Grid item lg={4} md={6} sm={6} xs={12}>
+                    <Card className={clsx("card", classes.card)}>
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        image="/assets/images/marketplace-house.jpeg"
+                        alt="property image"
+                      />
+                      <CardContent>
+                        <div className={clsx("flex", classes.wid100)}>
+                          <h5 className={classes.wid100}>dope</h5>
+                          <h5 className={clsx("text-right", classes.wid100)}>
+                            12% ROI
+                          </h5>
+                        </div>
+                        <div className={clsx("flex", classes.wid100)}>
+                          <div className={classes.wid100}>Chicago, IL 60244</div>
+                          <div className={clsx("text-right", classes.wid100)}>
+                            5.4% CoC
+                          </div>
+                        </div>
+                        <div className="mb-3" />
+                        <SliderNoThumb
+                          className={clsx(classes.wid100, classes.pb0)}
+                          value={100}
+                          max={340}
+                        />
+                        <div className={clsx("flex", classes.wid100)}>
+                          <div className={classes.wid100}>$184,750 - 66% Funded</div>
+                          <div className={clsx("text-right", classes.wid100)}>
+                            240 Tokens Left
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+          {
+            assetList === null ?
+              <Grid item xs={12}><h3>Hold on... we're getting the investments for you.</h3></Grid>
+              : assetList === -1 || assetList.length == 0 ?
+                <Grid item xs={12}><h3>Whoops! There was an error! Try refreshing?</h3></Grid>
+                :
+                assetList.forEach(asset => (
+                  <Grid item lg={4} md={6} sm={6} xs={12}>
+                    <Card className={clsx("card", classes.card)}>
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        image="/assets/images/marketplace-house.jpeg"
+                        alt="property image"
+                      />
+                      <CardContent>
+                        <div className={clsx("flex", classes.wid100)}>
+                          <h5 className={classes.wid100}>{asset.location.addressLine1}</h5>
+                          <h5 className={clsx("text-right", classes.wid100)}>
+                            12% ROI
+                          </h5>
+                        </div>
+                        <div className={clsx("flex", classes.wid100)}>
+                          <div className={classes.wid100}>Chicago, IL 60244</div>
+                          <div className={clsx("text-right", classes.wid100)}>
+                            5.4% CoC
+                          </div>
+                        </div>
+                        <div className="mb-3" />
+                        <SliderNoThumb
+                          className={clsx(classes.wid100, classes.pb0)}
+                          value={100}
+                          max={340}
+                        />
+                        <div className={clsx("flex", classes.wid100)}>
+                          <div className={classes.wid100}>$184,750 - 66% Funded</div>
+                          <div className={clsx("text-right", classes.wid100)}>
+                            240 Tokens Left
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))
+          }
         </Grid>
       </div>
     </div>
