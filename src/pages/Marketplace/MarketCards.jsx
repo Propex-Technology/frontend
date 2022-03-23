@@ -37,102 +37,86 @@ const SliderNoThumb = withStyles(theme => ({
   }
 }))(Slider);
 
+// TODO: remaining information data
+const AssetCard = props => {
+  const classes = useStyles();
+
+  const currencySymbol = 
+    props.currency == "GBP" ? "£" :
+    props.currency == "USD" ? "$" :
+    props.currency;
+
+  const remainingTokens = props.totalTokens - props.purchasedTokens;
+  const percentTokensLeft = 100 - (remainingTokens / props.totalTokens * 100).toFixed(0);
+
+  return (
+    <Grid item lg={4} md={6} sm={6} xs={12}>
+      <Card className={clsx("card", classes.card)}>
+        <CardMedia
+          component="img"
+          height="140"
+          image={props.image}
+          alt={props.location.addressLine1}
+        />
+        <CardContent>
+          <div className={clsx("flex", classes.wid100)}>
+            <h5 className={classes.wid100}>{props.location.addressLine1}</h5>
+            <h5 className={clsx("text-right", classes.wid100)}>
+              {props.estimatedROI}% ROI
+            </h5>
+          </div>
+          <div className={clsx("flex", classes.wid100)}>
+            <div className={classes.wid100}>
+              {props.location.city}, {props.location.province} {props.location.zip}
+            </div>
+            <div className={clsx("text-right", classes.wid100)}>
+              {props.cashPayout}% CoC
+            </div>
+          </div>
+          <div className="mb-3" />
+          <SliderNoThumb
+            className={clsx(classes.wid100, classes.pb0)}
+            value={props.purchasedTokens}
+            max={props.remainingTokens}
+          />
+          <div className={clsx("flex", classes.wid100)}>
+            <div className={classes.wid100}>{currencySymbol}{props.raiseGoal} - {percentTokensLeft}% Funded</div>
+            <div className={clsx("text-right", classes.wid100)}>
+              {remainingTokens} Tokens Left
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Grid>
+  );
+}
+
 const MarketCards = () => {
   const classes = useStyles();
 
   // Fetch Data from Backend
-  let [assetList, setAssetList] = useState(null);
-  fetch(`${backendURL}/assets/get/shortlist/30/0`)
+  let [assetList, setAssetList] = useState(undefined);
+  if(assetList === undefined) {
+    setAssetList(0);
+    fetch(`${backendURL}/assets/get/shortlist/30/0`)
     .then(res => res.json())
     .then(res => {
-      //if (res.success) setAssetList(res.data);
-      //else setAssetList(-1);
+      if (res.success) setAssetList(res.data);
+      else setAssetList(-1);
     });
+  }
 
   return (
     <div className="section section-market-cards" id="market-cards">
       <div className="container">
         <Grid container spacing={2}>
-        <Grid item lg={4} md={6} sm={6} xs={12}>
-                    <Card className={clsx("card", classes.card)}>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image="/assets/images/marketplace-house.jpeg"
-                        alt="property image"
-                      />
-                      <CardContent>
-                        <div className={clsx("flex", classes.wid100)}>
-                          <h5 className={classes.wid100}>dope</h5>
-                          <h5 className={clsx("text-right", classes.wid100)}>
-                            12% ROI
-                          </h5>
-                        </div>
-                        <div className={clsx("flex", classes.wid100)}>
-                          <div className={classes.wid100}>Chicago, IL 60244</div>
-                          <div className={clsx("text-right", classes.wid100)}>
-                            5.4% CoC
-                          </div>
-                        </div>
-                        <div className="mb-3" />
-                        <SliderNoThumb
-                          className={clsx(classes.wid100, classes.pb0)}
-                          value={100}
-                          max={340}
-                        />
-                        <div className={clsx("flex", classes.wid100)}>
-                          <div className={classes.wid100}>$184,750 - 66% Funded</div>
-                          <div className={clsx("text-right", classes.wid100)}>
-                            240 Tokens Left
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Grid>
           {
-            assetList === null ?
+            assetList === undefined || assetList === 0 ?
               <Grid item xs={12}><h3>Hold on... we're getting the investments for you.</h3></Grid>
               : assetList === -1 || assetList.length == 0 ?
                 <Grid item xs={12}><h3>Whoops! There was an error! Try refreshing?</h3></Grid>
                 :
-                assetList.forEach(asset => (
-                  <Grid item lg={4} md={6} sm={6} xs={12}>
-                    <Card className={clsx("card", classes.card)}>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image="/assets/images/marketplace-house.jpeg"
-                        alt="property image"
-                      />
-                      <CardContent>
-                        <div className={clsx("flex", classes.wid100)}>
-                          <h5 className={classes.wid100}>{asset.location.addressLine1}</h5>
-                          <h5 className={clsx("text-right", classes.wid100)}>
-                            12% ROI
-                          </h5>
-                        </div>
-                        <div className={clsx("flex", classes.wid100)}>
-                          <div className={classes.wid100}>Chicago, IL 60244</div>
-                          <div className={clsx("text-right", classes.wid100)}>
-                            5.4% CoC
-                          </div>
-                        </div>
-                        <div className="mb-3" />
-                        <SliderNoThumb
-                          className={clsx(classes.wid100, classes.pb0)}
-                          value={100}
-                          max={340}
-                        />
-                        <div className={clsx("flex", classes.wid100)}>
-                          <div className={classes.wid100}>$184,750 - 66% Funded</div>
-                          <div className={clsx("text-right", classes.wid100)}>
-                            240 Tokens Left
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))
+                assetList.map(asset => <AssetCard {...asset} key={asset.assetId} />)
           }
         </Grid>
       </div>
@@ -141,3 +125,4 @@ const MarketCards = () => {
 };
 
 export default MarketCards;
+export { AssetCard };
