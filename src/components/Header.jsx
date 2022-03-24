@@ -4,7 +4,7 @@ import { Icon, IconButton } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import Link from '@mui/material/Link';
 
-const Header = () => {
+const Header = props => {
 
   //#region Boilerplate Menu + Scroll Logic
   const [isTop, setIsTop] = useState(true);

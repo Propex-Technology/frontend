@@ -59,9 +59,7 @@ function App() {
               
 
               <Route path="/marketplace" component={MarketplacePage} />
-              <Route path="/asset" component={NotFoundPage}>
-                {/* I think you add more routes here */}
-              </Route>
+              <Route path="/asset/:assetId" component={AssetPage} />
               <Route path="*" component={NotFoundPage} />
               <Redirect path="/" exact to="marketplace" />
             </Switch>
