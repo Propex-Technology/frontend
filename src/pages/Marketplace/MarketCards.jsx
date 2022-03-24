@@ -37,7 +37,7 @@ const SliderNoThumb = withStyles(theme => ({
   }
 }))(Slider);
 
-// TODO: remaining information data
+// TODO: remaining information
 const AssetCard = props => {
   const classes = useStyles();
 
@@ -99,7 +99,7 @@ const MarketCards = () => {
   if(assetList === undefined) {
     setAssetList(0);
     fetch(`${backendURL}/assets/get/shortlist/30/0`)
-    .then(res => res.json())
+    .then(res => { return res.json(); })
     .then(res => {
       if (res.success) setAssetList(res.data);
       else setAssetList(-1);

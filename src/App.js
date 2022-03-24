@@ -29,6 +29,7 @@ import Landing12 from "./home/Landing12";
 
 import MarketplacePage from "./pages/Marketplace";
 import AssetPage from "./pages/Asset";
+import NotFoundPage from "./pages/NotFound";
 
 function App() {
   return (
@@ -58,10 +59,11 @@ function App() {
               
 
               <Route path="/marketplace" component={MarketplacePage} />
-              <Route path="/asset" component={AssetPage}>
+              <Route path="/asset" component={NotFoundPage}>
                 {/* I think you add more routes here */}
               </Route>
-              <Redirect path="/" exact to="demos" />
+              <Route path="*" component={NotFoundPage} />
+              <Redirect path="/" exact to="marketplace" />
             </Switch>
           </BrowserRouter>
         </Scrollbar>
