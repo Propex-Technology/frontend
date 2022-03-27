@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { backendURL } from "../../contracts";
 import { currencySymbol } from "../../utils";
 import DetailsSection from "./DetailsSection";
+import AssetImageCarousel from "./AssetImageCarousel";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   introWrapper: {
@@ -15,18 +16,6 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
     width: "100%"
   }
 }));
-
-const ImageCarousel = props => {
-  return (
-    <Grid item sm={7} xs={12}>
-      <Card>
-        <CardContent>
-          IMAGE GOES HERE
-        </CardContent>
-      </Card>
-    </Grid>
-  );
-}
 
 const LeftRightText = ({ left, right }) => {
   const classes = useStyles();
@@ -50,7 +39,7 @@ const ImportantInfoCard = props => {
   const tokensLeft = props.totalTokens - tokensOwned;
 
   return (
-    <Grid item sm={5} xs={12}>
+    <Grid item md={5} sm={12}>
       <Card>
         <CardContent>
           <h3>{props.location.addressLine1}</h3>
@@ -98,7 +87,7 @@ const AssetView = () => {
           <Grid container spacing={3}>
             {asset == undefined || asset == 0 ? <></> :
               <>
-                <ImageCarousel />
+                <AssetImageCarousel {...asset} />
                 <ImportantInfoCard {...asset} />
                 <DetailsSection {...asset} />
               </>

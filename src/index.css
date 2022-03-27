@@ -13,3 +13,9 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   overflow: hidden;
 }
+
+.imgcenter {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

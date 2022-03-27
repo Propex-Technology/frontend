@@ -12,12 +12,12 @@ export default function DetailsSection(props) {
   };
 
   return (
-    <Grid item sm={9} xs={12}>
+    <Grid item md={9} sm={11} xs={12}>
       <Tabs
         value={value}
         onChange={handleChange}
         variant="scrollable"
-        scrollButtons={false}
+        allowScrollButtonsMobile
         aria-label="scrollable prevent tabs example"
         style={{ marginBottom: "1rem" }}
       >
@@ -37,7 +37,7 @@ function DetailSwitch(props) {
   // Probably best to request relevant data here
   let [data, setData] = useState(null);
   if (data == null) {
-    setData(-1);
+    setData("");
     fetch(props.description)
       .then(res => res.text())
       .then(body => {
