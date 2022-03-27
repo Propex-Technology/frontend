@@ -100,7 +100,7 @@ const AssetView = () => {
               <>
                 <ImageCarousel />
                 <ImportantInfoCard {...asset} />
-                <DetailsSection />
+                <DetailsSection {...asset} />
               </>
             }
           </Grid>

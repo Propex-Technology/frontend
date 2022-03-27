@@ -1,29 +1,31 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid';
 import ReactMarkdown from 'react-markdown';
 
 export default function DetailsSection(props) {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   return (
-    <Grid item sm={10} xs={12}>
+    <Grid item sm={9} xs={12}>
       <Tabs
         value={value}
         onChange={handleChange}
         variant="scrollable"
         scrollButtons={false}
         aria-label="scrollable prevent tabs example"
-        style={{marginBottom: "1rem"}}
+        style={{ marginBottom: "1rem" }}
       >
-        <Tab label="Item One" />
-        <Tab label="Item Two" />
-        <Tab label="Item Three" />
+        <Tab label="Description" />
+        <Tab label="Financials" />
+        <Tab label="Documents" />
+        <Tab label="Managment" />
+        <Tab label="Purchase Process" />
       </Tabs>
       <DetailSwitch value={value} {...props} />
     </Grid>
@@ -33,25 +35,42 @@ export default function DetailsSection(props) {
 function DetailSwitch(props) {
 
   // Probably best to request relevant data here
+  let [data, setData] = useState(null);
+  if (data == null) {
+    setData(-1);
+    fetch(props.description)
+      .then(res => res.text())
+      .then(body => {
+        console.log(body);
+        setData(body);
+      });
+  }
 
   switch (props.value) {
-    case 0: return (
+    default: case 0: return (
       <ReactMarkdown>
-        ## Testing 123\n
-        This is a test. 123.
-        123.
-        123.
+        {data}
       </ReactMarkdown>
     );
     case 1: return (
       <div>
-        Second One
+        Financials [IN DEVELOPMENT]
       </div>
     );
-    case 2: return(
+    case 2: return (
       <div>
-        Third one
+        Documents [IN DEVELOPMENT]
       </div>
-    )
+    );
+    case 3: return (
+      <div>
+        Developer [IN DEVELOPMENT]
+      </div>
+    );
+    case 4: return (
+      <div>
+        Purchase Process [IN DEVELOPMENT]
+      </div>
+    );
   }
 }
