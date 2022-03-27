@@ -11,6 +11,7 @@ import { withStyles, makeStyles } from '@mui/styles';
 import { backendURL } from "../../contracts";
 import clsx from "clsx";
 import Link from '@mui/material/Link';
+import { currencySymbol } from "../../utils";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   card: {
@@ -41,12 +42,7 @@ const SliderNoThumb = withStyles(theme => ({
 // TODO: remaining information
 const AssetCard = props => {
   const classes = useStyles();
-
-  const currencySymbol =
-    props.currency == "GBP" ? "£" :
-      props.currency == "USD" ? "$" :
-        props.currency;
-
+  
   const remainingTokens = props.totalTokens - props.purchasedTokens;
   const percentTokensLeft = 100 - (remainingTokens / props.totalTokens * 100).toFixed(0);
 

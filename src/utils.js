@@ -95,3 +95,9 @@ export function classList(classes) {
     .map((entry) => entry[0])
     .join(" ");
 }
+
+export function currencySymbol(currency) {
+  return currency === "GBP" ? "£" :
+    currency === "USD" ? "$" :
+      currency;
+}
