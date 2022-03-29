@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Grid from '@mui/material/Grid';
+import {
+  Tab, Tabs, Grid, Button
+} from '@mui/material';
 import ReactMarkdown from 'react-markdown';
+import Link from '@mui/material/Link';
+import DownloadIcon from '@mui/icons-material/Download';
 
 export default function DetailsSection(props) {
   const [value, setValue] = useState(0);
@@ -34,6 +36,7 @@ export default function DetailsSection(props) {
 
 function DetailSwitch(props) {
 
+  console.log(props);
   // Probably best to request relevant data here
   let [data, setData] = useState(null);
   if (data == null) {
@@ -58,9 +61,18 @@ function DetailSwitch(props) {
       </div>
     );
     case 2: return (
-      <div>
-        Documents [IN DEVELOPMENT]
-      </div>
+      <>
+        {props.documents.map((x, i) => (
+          <div key={i} className="flex" style={{width: "100%"}}>
+            <p style={{width: "100%"}} >Document {i}:</p>
+            <Link href={x} target="_blank">
+              <Button variant="contained" endIcon={<DownloadIcon />} >
+                Download
+              </Button>
+            </Link>
+          </div>
+        ))}
+      </>
     );
     case 3: return (
       <div>
