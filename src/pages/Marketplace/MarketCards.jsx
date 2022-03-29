@@ -5,13 +5,13 @@ import {
   Card,
   CardContent,
   CardMedia,
-  Slider,
 } from "@mui/material";
-import { withStyles, makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import { backendURL } from "../../contracts";
 import clsx from "clsx";
 import Link from '@mui/material/Link';
 import { currencySymbol } from "../../utils";
+import SliderNoThumb from "../../components/SliderNoThumb";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   card: {
@@ -32,12 +32,6 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
     paddingBottom: "0px !important"
   }
 }));
-
-const SliderNoThumb = withStyles(theme => ({
-  thumb: {
-    display: "none !important"
-  }
-}))(Slider);
 
 // TODO: remaining information
 const AssetCard = props => {

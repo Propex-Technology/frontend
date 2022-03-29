@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, Card, CardContent } from "@mui/material";
+import { Grid, Card, CardContent, Button } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
@@ -7,6 +7,7 @@ import { backendURL } from "../../contracts";
 import { currencySymbol } from "../../utils";
 import DetailsSection from "./DetailsSection";
 import AssetImageCarousel from "./AssetImageCarousel";
+import SliderNoThumb from "../../components/SliderNoThumb";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   introWrapper: {
@@ -30,13 +31,15 @@ const LeftRightText = ({ left, right }) => {
     </div>);
 }
 
-// TODO: Get data from blockchain
+// TODO: Get sold tokens, your tokens, & 
 const ImportantInfoCard = props => {
   const classes = useStyles();
-  const curSybl = currencySymbol(props.currency); 
+  const curSybl = currencySymbol(props.currency);
   const totalRaised = props.tokenPrice * 0;// TODO: numberOwned from blockchain
-  const tokensOwned = 0; // TODO: tokensOwned from blockchain
-  const tokensLeft = props.totalTokens - tokensOwned;
+  const tokensOwned = 0; // TODO: tokens you own from blockchain
+  const tokensSold = 0; // TODO: tokens sold in total from blockchain
+  const tokensLeft = props.totalTokens - tokensSold;
+  const initalTokenSaleFinished = tokensSold >= props.totalTokens;
 
   return (
     <Grid item md={5} sm={12}>
@@ -55,8 +58,25 @@ const ImportantInfoCard = props => {
           <LeftRightText left="Total On-Chain Raise:" right={curSybl + totalRaised} />
           <LeftRightText left="Off-Chain Raised:" right={curSybl + props.offPlatformRaise} />
           <LeftRightText left="Tokens Owned:" right={tokensOwned} />
-          <div style={{height: "60px"}} />
+          <div style={{ height: "60px" }} />
+          <SliderNoThumb
+            style={{ width: "100%" }}
+            value={tokensSold}
+            max={props.totalTokens}
+          />          
           <LeftRightText left={`${props.totalTokens} Total Tokens`} right={`${tokensLeft} Tokens Left`} />
+          <div style={{ height: "16px" }} />
+          <Button size="lg" variant="contained" className={classes.wid100}
+            onClick={() => {
+              if (initalTokenSaleFinished) {
+                window.location.href = "../marketplace";
+              } else {
+                // token sale
+              }
+            }}
+          >
+            {initalTokenSaleFinished ? "Sold Out" : "Purchase"}
+          </Button>
         </CardContent>
       </Card>
     </Grid>
