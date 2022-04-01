@@ -9,6 +9,7 @@
     "@mui/icons-material": "^5.0.0-rc.0",
     "@mui/material": "^5.5.2",
     "@mui/styles": "^5.5.1",
+    "@usedapp/core": "^0.12.2",
     "clsx": "^1.1.0",
     "cross-env": "^7.0.3",
     "gh-pages": "^3.2.3",
