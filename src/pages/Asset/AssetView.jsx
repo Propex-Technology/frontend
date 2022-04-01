@@ -8,6 +8,7 @@ import { currencySymbol } from "../../utils";
 import DetailsSection from "./DetailsSection";
 import AssetImageCarousel from "./AssetImageCarousel";
 import SliderNoThumb from "../../components/SliderNoThumb";
+//import "./slant.css";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   introWrapper: {
@@ -94,7 +95,6 @@ const AssetView = () => {
     fetch(`${backendURL}/assets/get/${assetId}`)
       .then(res => { return res.json(); })
       .then(res => {
-        console.log(res);
         if (res.success) setAsset(res);
         else setAsset(-1);
       });

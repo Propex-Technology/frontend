@@ -1,10 +1,24 @@
 import { useState } from 'react';
 import {
-  Tab, Tabs, Grid, Button
+  Tab, Tabs, Grid, Button, Avatar, Link, Box
 } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
-import Link from '@mui/material/Link';
 import DownloadIcon from '@mui/icons-material/Download';
+import { useFetchMarkdown } from '../../utils';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles(({ palette, ...theme }) => ({
+  blueLine: {
+    padding: "0px 2rem",
+    background: palette.primary,
+    height: "4px"
+  },
+  centered: {
+    marginRight: "auto",
+    marginLeft: "auto"
+  }
+}));
+
 
 export default function DetailsSection(props) {
   const [value, setValue] = useState(0);
@@ -29,30 +43,24 @@ export default function DetailsSection(props) {
         <Tab label="Managment" />
         <Tab label="Purchase Process" />
       </Tabs>
-      <DetailSwitch value={value} {...props} />
+      <div style={{ minHeight: "300px" }}>
+        <DetailSwitch value={value} {...props} />
+      </div>
     </Grid>
   );
 }
 
+
 function DetailSwitch(props) {
 
-  console.log(props);
-  // Probably best to request relevant data here
-  let [data, setData] = useState(null);
-  if (data == null) {
-    setData("");
-    fetch(props.description)
-      .then(res => res.text())
-      .then(body => {
-        console.log(body);
-        setData(body);
-      });
-  }
+  const classes = useStyles();
+  let description = useFetchMarkdown(props.description);
+  let managerDesc = useFetchMarkdown(props.manager.description);
 
   switch (props.value) {
     default: case 0: return (
       <ReactMarkdown>
-        {data}
+        {description}
       </ReactMarkdown>
     );
     case 1: return (
@@ -63,8 +71,8 @@ function DetailSwitch(props) {
     case 2: return (
       <>
         {props.documents.map((x, i) => (
-          <div key={i} className="flex" style={{width: "100%"}}>
-            <p style={{width: "100%"}} >Document {i}:</p>
+          <div key={i} className="flex" style={{ width: "100%" }}>
+            <p style={{ width: "100%" }} >Document {i}:</p>
             <Link href={x} target="_blank">
               <Button variant="contained" endIcon={<DownloadIcon />} >
                 Download
@@ -75,9 +83,23 @@ function DetailSwitch(props) {
       </>
     );
     case 3: return (
-      <div>
-        Developer [IN DEVELOPMENT]
-      </div>
+      <Grid container spacing={3}>
+        <Grid item md={4} sm={5} xs={12}>
+          <Avatar alt={props.manager.name}
+            sx={{ width: "200px", height: "200px" }}
+            src={props.manager.image}
+            className={classes.centered}
+          />
+          <Box textAlign='center' marginTop='1rem'>
+            <Link href={"mailto:" + props.manager.email}>
+              <Button>Contact</Button>
+            </Link>
+          </Box>
+        </Grid>
+        <Grid item md={8} sm={7} xs={12}>
+          <ReactMarkdown>{managerDesc}</ReactMarkdown>
+        </Grid>
+      </Grid>
     );
     case 4: return (
       <div>

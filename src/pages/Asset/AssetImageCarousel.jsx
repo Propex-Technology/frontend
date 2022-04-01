@@ -17,8 +17,9 @@ function AssetImageCarousel(props) {
     style: { position: "absolute", bottom: "21px" }
   };
 
+  // TODO: make the height change on mobile
   return (
-    <Grid item md={7} sm={12}>
+    <Grid item md={7} sm={12} xs={12}>
       <Card>
         <CardMedia overflow="hidden">
           <Carousel 

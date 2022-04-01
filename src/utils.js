@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export function debounce(func, wait, immediate) {
   var timeout;
   return function () {
@@ -100,4 +102,18 @@ export function currencySymbol(currency) {
   return currency === "GBP" ? "£" :
     currency === "USD" ? "$" :
       currency;
+}
+
+export function useFetchMarkdown(url) {
+  let [markdown, setMarkdown] = useState(null);
+  if (markdown == null) {
+    setMarkdown("");
+    fetch(url)
+      .then(res => res.text())
+      .then(body => {
+        setMarkdown(body);
+      });
+  }
+
+  return markdown;
 }
