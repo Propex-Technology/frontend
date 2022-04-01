@@ -8,7 +8,7 @@ import { currencySymbol } from "../../utils";
 import DetailsSection from "./DetailsSection";
 import AssetImageCarousel from "./AssetImageCarousel";
 import SliderNoThumb from "../../components/SliderNoThumb";
-//import "./slant.css";
+import "./slant.css";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   introWrapper: {
@@ -32,7 +32,7 @@ const LeftRightText = ({ left, right }) => {
     </div>);
 }
 
-// TODO: Get sold tokens, your tokens, & 
+// TODO: Get sold tokens, your tokens from blockchain
 const ImportantInfoCard = props => {
   const classes = useStyles();
   const curSybl = currencySymbol(props.currency);
@@ -102,6 +102,7 @@ const AssetView = () => {
 
   return (
     <section className={clsx("section")} id="asset-view">
+      <div className="slantBackground" />
       <div className={classes.introWrapper}>
         <div className="container">
           <Grid container spacing={3}>
