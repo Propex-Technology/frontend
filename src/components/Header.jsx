@@ -66,7 +66,7 @@ const Header = props => {
         <div className="m-auto" />
         <ul className="navigation">
           <li>
-            <a href="/dashboard">
+            <a href="/account">
               <Icon className="mr-4">person</Icon> My Account
             </a>
           </li>

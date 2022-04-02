@@ -8,7 +8,7 @@ import DetailsSection from "./DetailsSection";
 import AssetImageCarousel from "./AssetImageCarousel";
 import ImportantInfoCard from "./ImportantInfoCard";
 import PurchaseAssetCard from "./PurchaseAssetCard";
-import "./slant.css";
+import "../../styles/slant.css";
 
 export const useStyles = makeStyles(({ palette, ...theme }) => ({
   introWrapper: {
