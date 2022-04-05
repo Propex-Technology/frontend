@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, TextField, Button } from "@mui/material";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from 'firebase/auth';
 import { useStyles } from "./AccountView";
+
+const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+const EMAIL_REGEX = 
+  /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
 export function LoginCard(props) {
   const classes = useStyles();
@@ -45,7 +49,7 @@ export function LoginCard(props) {
       })
       .catch((error) => {
         const errorCode = error.code;
-        switch(error) {
+        switch (error) {
           case "auth/email-already-in-use":
             setErrorMessage("Email is already registered.");
           case "auth/missing-email":
@@ -56,18 +60,37 @@ export function LoginCard(props) {
             setErrorMessage("Please enter a longer password.");
             break;
         }
-        
+
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
         setButtonsDisabled(false);
       });
   }
 
+  useEffect(x => {
+    if (isRegistering) {
+      if(!EMAIL_REGEX.test(email))
+        setErrorMessage("Please enter a valid email.");
+      else if (password.length < 8)
+        setErrorMessage("Password length should be 8 characters or more.");
+      else if (!PASSWORD_REGEX.test(password))
+        setErrorMessage("Password should contain a special character, a number, and a letter.");
+      else if (password != confirmPassword)
+        setErrorMessage("Passwords don't match!");
+      else setErrorMessage("");
+
+      console.log(password, confirmPassword)
+    }
+  }, [email, confirmPassword, password]);
+  useEffect(x => {
+    if (!isRegistering) setErrorMessage("");
+  }, [isRegistering]);
+
   return (
     <Card className={classes.loginCard}>
       <CardContent>
         <h2 className={classes.textPrimary}>Login</h2>
-        <div style={{color: "red", margin: "12px"}}>{errorMessage}</div>
+        <div style={{ color: "red", margin: "8px", minHeight: "21px" }}>{errorMessage}</div>
         <div className={classes.mBtm}>
           <TextField id="email" label="Email" variant="outlined" type="email"
             onChange={x => setEmail(x.target.value)} value={email} />
@@ -82,12 +105,12 @@ export function LoginCard(props) {
               <TextField id="confirmPassword" label="Confirm Password" variant="outlined" type="password"
                 onChange={x => setConfirmPassword(x.target.value)} value={confirmPassword} />
             </div>
-            <Button variant="contained" onClick={handleRegister} disabled={buttonsDisabled}
+            <Button variant="contained" onClick={handleRegister} disabled={buttonsDisabled || errorMessage != ""}
               className={classes.mBtm} style={{ marginRight: "16px" }}>
               Register
             </Button>
-            <Button className={classes.mBtm} variant="contained"
-              onClick={x => setIsRegistering(false)} disabled={buttonsDisabled}>
+            <Button className={classes.mBtm} variant="contained" disabled={buttonsDisabled}
+              onClick={x => setIsRegistering(false)}>
               Or Login
             </Button>
           </>
@@ -97,8 +120,8 @@ export function LoginCard(props) {
               className={classes.mBtm} style={{ marginRight: "16px" }}>
               Login
             </Button>
-            <Button className={classes.mBtm} variant="contained"
-              onClick={x => setIsRegistering(true)} disabled={buttonsDisabled}>
+            <Button className={classes.mBtm} variant="contained" disabled={buttonsDisabled}
+              onClick={x => setIsRegistering(true)}>
               Or Register
             </Button>
           </>
