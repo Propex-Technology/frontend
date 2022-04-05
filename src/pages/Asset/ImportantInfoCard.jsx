@@ -1,5 +1,6 @@
 import React from "react";
-import { Grid, Card, CardContent, Button } from "@mui/material";
+import { Grid, Card, CardContent, Button, Tooltip } from "@mui/material";
+import QuestionIcon from "@mui/icons-material/QuestionMarkOutlined";
 import clsx from "clsx";
 import { currencySymbol } from "../../utils";
 import SliderNoThumb from "../../components/SliderNoThumb";
@@ -17,6 +18,12 @@ const LeftRightText = ({ left, right }) => {
       </div>
     </div>);
 }
+
+const QuestionTooltip = ({ title }) => (
+  <Tooltip title={title}>
+    <QuestionIcon fontSize={"15px"} color="primary" />
+  </Tooltip>
+);
 
 // TODO: Get sold tokens, your tokens from blockchain
 export default props => {
@@ -37,13 +44,23 @@ export default props => {
           <div className={clsx("flex", classes.wid100)}>
             <div className={classes.wid100}>
               {props.cashPayout}% CoC
+              <QuestionTooltip title="Yearly cash you gain in relation to investment." />
             </div>
             <div className={clsx("text-right", classes.wid100)}>
+              <Tooltip title="Estimated yearly housing price increase + CoC.">
+                <QuestionIcon fontSize={"15px"} color="primary" />
+              </Tooltip>
               {props.estimatedROI}% ROI
             </div>
           </div>
-          <LeftRightText left="Total On-Chain Raise:" right={curSybl + totalRaised} />
-          <LeftRightText left="Off-Chain Raised:" right={curSybl + props.offPlatformRaise} />
+          <LeftRightText
+            left={<div>On-Chain Raised: <QuestionTooltip title="Amount of money raised so far on Propex." /></div>}
+            right={curSybl + totalRaised}
+          />
+          <LeftRightText 
+            left={<div>Off-Chain Raised:<QuestionTooltip title="Amount of money raised off Propex." /></div>}
+            right={curSybl + props.offPlatformRaise} 
+          />
           <LeftRightText left="Tokens Owned:" right={tokensOwned} />
           <div style={{ height: "60px" }} />
           <SliderNoThumb
