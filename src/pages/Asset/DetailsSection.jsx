@@ -6,6 +6,8 @@ import ReactMarkdown from 'react-markdown';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useFetchMarkdown } from '../../utils';
 import { makeStyles } from '@mui/styles';
+import { SecondaryMarketTable } from './SecondaryMarketTable';
+
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   blueLine: {
@@ -21,7 +23,10 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 
 
 export default function DetailsSection(props) {
-  const [value, setValue] = useState(0);
+  const tokensSold = 0; // TODO: tokens sold in total from blockchain
+  const tokensLeft = props.totalTokens - tokensSold;
+  const initialTokenSaleFinished = true;//tokensSold >= props.totalTokens;
+  const [value, setValue] = useState(1);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -37,6 +42,7 @@ export default function DetailsSection(props) {
         aria-label="scrollable prevent tabs example"
         style={{ marginBottom: "1rem" }}
       >
+        <Tab label="Market" disabled={!initialTokenSaleFinished} />
         <Tab label="Description" />
         <Tab label="Financials" />
         <Tab label="Documents" />
@@ -44,7 +50,9 @@ export default function DetailsSection(props) {
         <Tab label="Purchase Process" />
       </Tabs>
       <div style={{ minHeight: "300px" }}>
-        <DetailSwitch value={value} {...props} />
+        <DetailSwitch value={value}
+          {...props} initialTokenSaleFinished={initialTokenSaleFinished}
+        />
       </div>
     </Grid>
   );
@@ -57,18 +65,23 @@ function DetailSwitch(props) {
   let description = useFetchMarkdown(props.description);
   let managerDesc = useFetchMarkdown(props.manager.description);
 
+  const [isBuyPage, setIsBuyPage] = useState(1);
+
   switch (props.value) {
-    default: case 0: return (
+    case 0: return (
+      <SecondaryMarketTable {...props} isBuyPage={isBuyPage} setIsBuyPage={setIsBuyPage} />
+    );
+    default: case 1: return (
       <ReactMarkdown>
         {description}
       </ReactMarkdown>
     );
-    case 1: return (
+    case 2: return (
       <div>
         Financials [IN DEVELOPMENT]
       </div>
     );
-    case 2: return (
+    case 3: return (
       <>
         {props.documents.map((x, i) => (
           <div key={i} className="flex" style={{ width: "100%" }}>
@@ -82,7 +95,7 @@ function DetailSwitch(props) {
         ))}
       </>
     );
-    case 3: return (
+    case 4: return (
       <Grid container spacing={3}>
         <Grid item md={4} sm={5} xs={12}>
           <Avatar alt={props.manager.name}
@@ -101,7 +114,7 @@ function DetailSwitch(props) {
         </Grid>
       </Grid>
     );
-    case 4: return (
+    case 5: return (
       <div>
         Purchase Process [IN DEVELOPMENT]
       </div>

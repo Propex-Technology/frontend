@@ -5,19 +5,7 @@ import clsx from "clsx";
 import { currencySymbol } from "../../utils";
 import SliderNoThumb from "../../components/SliderNoThumb";
 import { useStyles } from "./AssetView";
-
-const LeftRightText = ({ left, right }) => {
-  const classes = useStyles();
-  return (
-    <div className={clsx("flex", classes.wid100)}>
-      <div className={classes.wid100}>
-        {left}
-      </div>
-      <div className={clsx("text-right", classes.wid100)}>
-        {right}
-      </div>
-    </div>);
-}
+import LeftRightText from "../../components/LeftRightText";
 
 const QuestionTooltip = ({ title }) => (
   <Tooltip title={title}>
@@ -33,7 +21,7 @@ export default props => {
   const tokensOwned = 0; // TODO: tokens you own from blockchain
   const tokensSold = 0; // TODO: tokens sold in total from blockchain
   const tokensLeft = props.totalTokens - tokensSold;
-  const initalTokenSaleFinished = tokensSold >= props.totalTokens;
+  const initialTokenSaleFinished = tokensSold >= props.totalTokens;
 
   return (
     <Grid item md={5} sm={12}>
@@ -69,9 +57,9 @@ export default props => {
             max={props.totalTokens} />
           <LeftRightText left={`${props.totalTokens} Total Tokens`} right={`${tokensLeft} Tokens Left`} />
           <div style={{ height: "16px" }} />
-          <Button size="lg" variant="contained" className={classes.wid100}
+          <Button size="lg" variant="contained" className={classes.wid100} disabled={initialTokenSaleFinished}
             onClick={() => {
-              if (initalTokenSaleFinished) {
+              if (initialTokenSaleFinished) {
                 window.location.href = "../marketplace";
               } else {
                 // token sale
@@ -79,7 +67,7 @@ export default props => {
               }
             }}
           >
-            {initalTokenSaleFinished ? "Sold Out" : "Purchase"}
+            {initialTokenSaleFinished ? "Sold Out" : "Purchase"}
           </Button>
         </CardContent>
       </Card>
