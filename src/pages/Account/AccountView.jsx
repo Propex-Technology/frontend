@@ -3,14 +3,12 @@ import { Grid, Card, CardContent, Button } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import clsx from "clsx";
 import "../../styles/slant.css";
-import {
-  signOut
-}
-  from 'firebase/auth';
+import { signOut } from 'firebase/auth';
 import { useAuthValue } from "../../components/AuthContext";
 import { LoginCard } from "./LoginCard";
 import Persona from 'persona';
 import { personaTemplateId, backendURL } from '../../contracts';
+import AccountDetailsGrid from "./AccountDetailsGrid";
 
 let client = null;
 
@@ -102,28 +100,28 @@ const AccountView = props => {
             {user === null ?
               <LoginCard auth={auth} />
               :
-              <Card>
-                <CardContent>
-                  {data == null ? 
-                  <div>
-                    <h3>Loading in that data...</h3>
-                    <p>Refresh the page if after 15 seconds data doesn't load.</p>
-                  </div> :
-                    data.kycStatus == "incomplete" ?
-                      <>
-                        <h3>{receivingKYC ? "Verifying your KYC..." : "You need to finish KYC!"}</h3>
-                        <div>The government requires it to invest in real estate.</div>
-                        <Button variant="contained" onClick={() => client.open()} disabled={receivingKYC}>
-                          Begin KYC
-                        </Button>
-                      </> :
-                      <>
-                        Whoopie you finished KYC!
-                      </>
-                  }
-                  <Button onClick={x => signOut(auth)}>Sign Out</Button>
-                </CardContent> {/*.then(x => forceUpdate()) */}
-              </Card>
+              data == null ?
+                <div>
+                  <h3>Loading in that data...</h3>
+                  <p>Refresh the page if after 15 seconds data doesn't load.</p>
+                </div> :
+                data.kycStatus === "incomplete" ?
+                  <Card>
+                    <CardContent>
+                      <h3>{receivingKYC ? "Verifying your KYC..." : "You need to finish KYC!"}</h3>
+                      <div>The government requires it to invest in real estate.</div>
+                      <Button variant="contained" onClick={() => client.open()} disabled={receivingKYC}>
+                        Begin KYC
+                      </Button>
+                      <Button variant="contained"
+                        style={{ marginLeft: "12px" }}
+                        onClick={x => { signOut(auth); window.location.reload(); }}
+                      >
+                        Sign Out
+                      </Button>
+                    </CardContent>
+                  </Card> :
+                  <AccountDetailsGrid />
             }
           </Grid>
         </Grid>
