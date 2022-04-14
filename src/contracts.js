@@ -10,3 +10,6 @@ else {
 
 export default contracts;
 export { backendURL };
+
+const personaTemplateId = "itmpl_N7TG9na74MYTSXeCB34VBBYU";
+export { personaTemplateId }

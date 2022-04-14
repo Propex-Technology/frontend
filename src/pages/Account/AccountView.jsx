@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Grid, Card, CardContent, Button } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import clsx from "clsx";
@@ -7,8 +7,12 @@ import {
   signOut
 }
   from 'firebase/auth';
-import { useAuthValue } from  "../../components/AuthContext";
+import { useAuthValue } from "../../components/AuthContext";
 import { LoginCard } from "./LoginCard";
+import Persona from 'persona';
+import { personaTemplateId, backendURL } from '../../contracts';
+
+let client = null;
 
 export const useStyles = makeStyles(({ palette, ...theme }) => ({
   introWrapper: {
@@ -35,10 +39,56 @@ export const useStyles = makeStyles(({ palette, ...theme }) => ({
 
 const AccountView = props => {
   const classes = useStyles();
+  const [receivingKYC, setReceivingKYC] = useState(false);
 
   const authContext = useAuthValue();
   const auth = authContext.auth;
   const user = authContext.user;
+  const data = authContext.data;
+  console.log("AccountView data:", data);
+
+  console.log(user);
+
+  // Open persona client if necessary
+  if (user != null && data != null && data.kycStatus == "incomplete" && client == null) {
+    client = new Persona.Client({
+      templateId: personaTemplateId,
+      environment: "sandbox",
+      referenceId: user.uid,
+      onReady: () => client.open(),
+      onComplete: ({ inquiryId, status, fields }) => {
+        // Inquiry completed. Optionally tell your server about it.
+        console.log(`Sending finished inquiry ${inquiryId} to backend`);
+        if (status === 'completed') {
+          setReceivingKYC(true);
+
+          // Fetch API request to update the KYC status of the user
+          console.log("FETCHING verifyKYC FROM BACKEND");
+          user.getIdToken()
+            .then(token => fetch(`${backendURL}/users/get/verifyKYC`,
+              {
+                method: 'GET',
+                headers: {
+                  'Authorization': token
+                },
+              }))
+            .then(res => res.json())
+            .then(x => {
+              // Then update user data accordingly.
+              if (x.success) authContext.setData(x);
+              else setReceivingKYC(false);
+            })
+            .catch(x => {
+              console.error(x);
+              setReceivingKYC(false);
+            });
+        }
+      },
+      onCancel: ({ inquiryId, sessionToken }) => console.log('onCancel'),
+      onError: (error) => console.log(error),
+    });
+    console.log("PERSONA CLIENT", client);
+  }
 
   // If they are, show the account page
   // If they aren't, show the login page
@@ -54,12 +104,27 @@ const AccountView = props => {
               :
               <Card>
                 <CardContent>
-                  You logged in. poggers
+                  {data == null ? 
+                  <div>
+                    <h3>Loading in that data...</h3>
+                    <p>Refresh the page if after 15 seconds data doesn't load.</p>
+                  </div> :
+                    data.kycStatus == "incomplete" ?
+                      <>
+                        <h3>{receivingKYC ? "Verifying your KYC..." : "You need to finish KYC!"}</h3>
+                        <div>The government requires it to invest in real estate.</div>
+                        <Button variant="contained" onClick={() => client.open()} disabled={receivingKYC}>
+                          Begin KYC
+                        </Button>
+                      </> :
+                      <>
+                        Whoopie you finished KYC!
+                      </>
+                  }
                   <Button onClick={x => signOut(auth)}>Sign Out</Button>
                 </CardContent> {/*.then(x => forceUpdate()) */}
               </Card>
             }
-
           </Grid>
         </Grid>
       </div>

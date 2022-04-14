@@ -23,14 +23,34 @@ import AccountPage from "./pages/Account";
 import { onAuthStateChanged } from 'firebase/auth';
 import { AuthProvider } from "./components/AuthContext";
 import { auth } from './firebase'
-
+import { backendURL } from './contracts';
 
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
+  const [userData, setUserData] = useState(null);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      if (user != null) {
+        user.getIdToken()
+          .then(token => fetch(`${backendURL}/users/get/`,
+            {
+              method: 'GET',
+              headers: {
+                'Authorization': token
+              },
+            }))
+          .then(res => res.json())
+          .then(x => {
+            if (x.success) setUserData(x);
+            else setUserData(null);
+          })
+          .catch(x => {
+            console.error(x);
+            setUserData(null);
+          });
+      }
     });
   }, []);
 
@@ -41,7 +61,7 @@ function App() {
           className="h-full-screen scrollable-content"
           option={{ suppressScrollX: true }}
         >
-          <AuthProvider value={{ auth, user: currentUser }}>
+          <AuthProvider value={{ auth, user: currentUser, data: userData, setData: setUserData }}>
             <BrowserRouter basename="/">
               <Switch>
                 <Route path="/marketplace" component={MarketplacePage} />

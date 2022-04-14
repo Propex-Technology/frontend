@@ -60,7 +60,7 @@ const Header = props => {
             <NavLink to="/marketplace">Marketplace</NavLink>
           </li>
           <li>
-            <Link href="https://projk.net/jeremy/">List a Property</Link>
+            <Link href="https://aj3aiuzjlbr.typeform.com/to/WVeb3wJh">List a Property</Link>
           </li>
         </ul>
         <div className="m-auto" />
