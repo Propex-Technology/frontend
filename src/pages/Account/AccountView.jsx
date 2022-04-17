@@ -101,10 +101,7 @@ const AccountView = props => {
               <LoginCard auth={auth} />
               :
               data == null ?
-                <div>
-                  <h3>Loading in that data...</h3>
-                  <p>Refresh the page if after 15 seconds data doesn't load.</p>
-                </div> :
+                <></> :
                 data.kycStatus === "incomplete" ?
                   <Card>
                     <CardContent>
