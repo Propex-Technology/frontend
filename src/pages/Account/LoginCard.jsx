@@ -2,18 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, TextField, Button } from "@mui/material";
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 import { useStyles } from "./AccountView";
 
 const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-const EMAIL_REGEX = 
+const EMAIL_REGEX =
   /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
 export function LoginCard(props) {
   const classes = useStyles();
 
   let [isRegistering, setIsRegistering] = useState(false);
+  let [isPasswordReset, setIsPasswordReset] = useState(false);
   let [password, setPassword] = useState("");
   let [confirmPassword, setConfirmPassword] = useState("");
   let [email, setEmail] = useState("");
@@ -35,9 +37,11 @@ export function LoginCard(props) {
         console.log(errorCode, errorMessage);
         setButtonsDisabled(false);
 
-        switch (error) {
+        switch (errorCode) {
           case "auth/wrong-password":
+          case "auth/user-not-found":
             setErrorMessage("Wrong password!");
+            break;
           case "auth/timeout":
             setErrorMessage("Timed out. Please try again later.");
             break;
@@ -78,38 +82,49 @@ export function LoginCard(props) {
       });
   }
 
-  useEffect(x => {
-    if (isRegistering) {
-      if(!EMAIL_REGEX.test(email))
-        setErrorMessage("Please enter a valid email.");
-      else if (password.length < 8)
-        setErrorMessage("Password length should be 8 characters or more.");
-      else if (!PASSWORD_REGEX.test(password))
-        setErrorMessage("Password should contain a special character, a number, and a letter.");
-      else if (password != confirmPassword)
-        setErrorMessage("Passwords don't match!");
-      else setErrorMessage("");
+  function handleForgotPassword() {
+    sendPasswordResetEmail(auth, email);
+    setIsPasswordReset(false);
+    setErrorMessage("Your password reset email should arrive soon. If not, try again.");
+  }
 
-      console.log(password, confirmPassword);
-    }
+  const checkRegistration = () => {
+    if (!EMAIL_REGEX.test(email))
+      setErrorMessage("Please enter a valid email.");
+    else if (password.length < 8)
+      setErrorMessage("Password length should be 8 characters or more.");
+    else if (!PASSWORD_REGEX.test(password))
+      setErrorMessage("Password should contain a special character, a number, and a letter.");
+    else if (password != confirmPassword)
+      setErrorMessage("Passwords don't match!");
+    else setErrorMessage("");
+  }
+
+  useEffect(x => {
+    if (isRegistering) checkRegistration();
   }, [email, confirmPassword, password]);
   useEffect(x => {
     setErrorMessage("");
+    if (isRegistering) checkRegistration();
   }, [isRegistering]);
 
   return (
     <Card className={classes.loginCard}>
       <CardContent>
-        <h2 className={classes.textPrimary}>Login</h2>
+        <h2 className={classes.textPrimary}>
+          {isRegistering ? "Register" : isPasswordReset ? "Reset Password" : "Login"}
+        </h2>
         <div style={{ color: "red", margin: "8px", minHeight: "21px" }}>{errorMessage}</div>
         <div className={classes.mBtm}>
           <TextField id="email" label="Email" variant="outlined" type="email"
             onChange={x => setEmail(x.target.value)} value={email} />
         </div>
-        <div className={classes.mBtm}>
-          <TextField id="password" label="Password" variant="outlined" type="password"
-            onChange={x => setPassword(x.target.value)} value={password} />
-        </div>
+        {isPasswordReset ? <></> :
+          <div className={classes.mBtm}>
+            <TextField id="password" label="Password" variant="outlined" type="password"
+              onChange={x => setPassword(x.target.value)} value={password} />
+          </div>
+        }
         {isRegistering ?
           <>
             <div className={classes.mBtm}>
@@ -124,23 +139,35 @@ export function LoginCard(props) {
               onClick={x => setIsRegistering(false)}>
               Or Login
             </Button>
-          </>
-          :
-          <>
-            <Button variant="contained" onClick={handleLogin} disabled={buttonsDisabled}
-              className={classes.mBtm} style={{ marginRight: "16px" }}>
-              Login
-            </Button>
-            <Button className={classes.mBtm} variant="contained" disabled={buttonsDisabled}
-              onClick={x => setIsRegistering(true)}>
-              Or Register
-            </Button>
-          </>
+          </> :
+          isPasswordReset ?
+            <>
+              <p>Send a password reset to your email.</p>
+              <Button variant="contained" onClick={handleForgotPassword} 
+                disabled={buttonsDisabled || email === ""}
+                className={classes.mBtm} style={{ marginRight: "16px" }}>
+                Send Email
+              </Button>
+              <Button className={classes.mBtm} variant="contained" disabled={buttonsDisabled}
+                onClick={x => setIsPasswordReset(false)}>
+                Go Back
+              </Button>
+            </>
+            :
+            <>
+              <Button variant="contained" onClick={handleLogin} disabled={buttonsDisabled}
+                className={classes.mBtm} style={{ marginRight: "16px" }}>
+                Login
+              </Button>
+              <Button className={classes.mBtm} variant="contained" disabled={buttonsDisabled}
+                onClick={x => setIsRegistering(true)}>
+                Or Register
+              </Button>
+              <div style={{ marginTop: "16px" }} onClick={x => { setIsRegistering(false); setIsPasswordReset(true); }} >
+                Forgot password?
+              </div>
+            </>
         }
-
-        <div style={{ marginTop: "16px" }}>
-          Forgot password?
-        </div>
       </CardContent>
     </Card>
   );

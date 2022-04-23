@@ -23,7 +23,7 @@ export const useStyles = makeStyles(({ palette, ...theme }) => ({
     width: "30%",
     minWidth: "250px",
     height: "50%",
-    minHeight: "350px"
+    minHeight: "390px"
   },
   textPrimary: {
     color: palette.primary.main,
