@@ -24,7 +24,7 @@ export default props => {
   const initialTokenSaleFinished = tokensSold >= props.totalTokens;
 
   return (
-    <Grid item md={5} sm={12}>
+    <Grid item md={5} sm={12} xs={12}>
       <Card>
         <CardContent>
           <h3>{props.location.addressLine1}</h3>
@@ -45,9 +45,9 @@ export default props => {
             left={<div>On-Chain Raised: <QuestionTooltip title="Amount of money raised so far on Propex." /></div>}
             right={curSybl + totalRaised}
           />
-          <LeftRightText 
+          <LeftRightText
             left={<div>Off-Chain Raised:<QuestionTooltip title="Amount of money raised off Propex." /></div>}
-            right={curSybl + props.offPlatformRaise} 
+            right={curSybl + props.offPlatformRaise}
           />
           <LeftRightText left="Tokens Owned:" right={tokensOwned} />
           <div style={{ height: "60px" }} />

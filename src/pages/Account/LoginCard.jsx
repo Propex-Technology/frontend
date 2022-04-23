@@ -34,6 +34,17 @@ export function LoginCard(props) {
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
         setButtonsDisabled(false);
+
+        switch (error) {
+          case "auth/wrong-password":
+            setErrorMessage("Wrong password!");
+          case "auth/timeout":
+            setErrorMessage("Timed out. Please try again later.");
+            break;
+          case "auth/already-initialized":
+            window.location.reload();
+            break;
+        }
       });
   }
 
@@ -79,11 +90,11 @@ export function LoginCard(props) {
         setErrorMessage("Passwords don't match!");
       else setErrorMessage("");
 
-      console.log(password, confirmPassword)
+      console.log(password, confirmPassword);
     }
   }, [email, confirmPassword, password]);
   useEffect(x => {
-    if (!isRegistering) setErrorMessage("");
+    setErrorMessage("");
   }, [isRegistering]);
 
   return (

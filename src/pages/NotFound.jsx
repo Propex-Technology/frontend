@@ -6,10 +6,6 @@ import { Button } from "@mui/material";
 import Link from '@mui/material/Link';
 
 const NotFound = () => {
-  useEffect(() => {
-    scrollTo("root");
-  }, [scrollTo]);
-
   return (
     <div className="landing">
       <Header />

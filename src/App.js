@@ -25,7 +25,6 @@ import { AuthProvider } from "./components/AuthContext";
 import { auth } from './firebase'
 import { backendURL } from './contracts';
 
-
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -59,7 +58,7 @@ function App() {
       <GlobalCss>
         <Scrollbar
           className="h-full-screen scrollable-content"
-          option={{ suppressScrollX: true }}
+          options={{ suppressScrollX: true }}
         >
           <AuthProvider value={{ auth, user: currentUser, data: userData, setData: setUserData }}>
             <BrowserRouter basename="/">

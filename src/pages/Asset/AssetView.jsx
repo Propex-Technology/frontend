@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import clsx from "clsx";
@@ -9,6 +9,7 @@ import AssetImageCarousel from "./AssetImageCarousel";
 import ImportantInfoCard from "./ImportantInfoCard";
 import PurchaseAssetCard from "./PurchaseAssetCard";
 import "../../styles/slant.css";
+import { scrollTo } from "../../utils";
 
 export const useStyles = makeStyles(({ palette, ...theme }) => ({
   introWrapper: {
@@ -37,6 +38,14 @@ const AssetView = () => {
 
   // Manage purchase state
   let [isPurchasing, setIsPurchasing] = useState(false);
+  useEffect(x => {
+    scrollTo('root');
+    /*
+    // cowboy code 101: how to write an awful frontend
+    setTimeout(function () {
+      console.log("yep that's doing it")
+    }, 1000);*/
+  }, [isPurchasing]);
 
   return (
     <section className={clsx("section")} id="asset-view">
