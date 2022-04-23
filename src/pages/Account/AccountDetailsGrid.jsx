@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { Button, Grid, Card, CardContent, Divider, IconButton, Box }
-  from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Button, Grid, Card, CardContent, Divider, IconButton, TextField,
+  Fade, Modal, Backdrop
+} from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import "../../styles/slant.css";
 import { signOut } from 'firebase/auth';
@@ -8,7 +10,9 @@ import { useAuthValue } from "../../components/AuthContext";
 import LeftRightText from "../../components/LeftRightText";
 import EditIcon from "@mui/icons-material/Edit";
 import clsx from "clsx";
+import { updatePassword } from "firebase/auth";
 
+const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 export const useStyles = makeStyles(({ palette, ...theme }) => ({
   assetImage: {
     height: "80px",
@@ -29,7 +33,9 @@ export const useStyles = makeStyles(({ palette, ...theme }) => ({
   }
 }));
 
+// The page
 const AccountDetailsGrid = () => {
+  const [open, setOpen] = useState(false);
   const classes = useStyles();
 
   const authContext = useAuthValue();
@@ -37,11 +43,16 @@ const AccountDetailsGrid = () => {
   const user = authContext.user;
   const data = authContext.data;
 
+  function handleModalOpen() {
+    setOpen(true);
+  }
+
   // Fake data
   const assets = [0, 1, 2, 3, 4, 5];
 
   return (
     <div className="container">
+      <ChangePasswordModal open={open} setOpen={setOpen} />
       <Grid container spacing={3}>
         <Grid item md={4} sm={12}>
           <Card>
@@ -54,7 +65,7 @@ const AccountDetailsGrid = () => {
                 <LeftRightText
                   left={<div style={{ lineHeight: "40px" }}>Password:</div>}
                   right={
-                    <IconButton size="xs">
+                    <IconButton size="xs" onClick={handleModalOpen}>
                       <EditIcon />
                     </IconButton>
                   }
@@ -109,7 +120,7 @@ const AccountDetailsGrid = () => {
                   </div>
                 </div>
                 <Divider style={{ marginTop: "12px", marginBottom: "16px" }} />
-                {assets.map((x, i) => <AssetDisplay />)}
+                {assets.map((x, i) => <AssetDisplay key={i} />)}
               </CardContent>
             </Card>
           </Grid>
@@ -119,6 +130,7 @@ const AccountDetailsGrid = () => {
   );
 };
 
+// The prefab that displays the information
 const AssetDisplay = props => {
   const classes = useStyles();
 
@@ -146,5 +158,88 @@ const AssetDisplay = props => {
     </div>
   );
 };
+
+const ChangePasswordModal = props => {
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [sendingChange, setSendingChange] = useState(false);
+  const auth = useAuthValue();
+
+  useEffect(() => {
+    if (newPassword.length < 8)
+      setErrorMessage("Password length should be 8 characters or more.");
+    else if (!PASSWORD_REGEX.test(newPassword))
+      setErrorMessage("Password should contain a special character, a number, and a letter.");
+    else if (newPassword != confirmNewPassword)
+      setErrorMessage("Passwords don't match!");
+    else setErrorMessage("");
+  }, [newPassword, confirmNewPassword]);
+
+  const modalBoxStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '350px',
+    p: 4
+  };
+
+  const handlePasswordChange = () => {
+    setSendingChange(true);
+    updatePassword(auth.user, newPassword)
+      .then(x => {
+        setErrorMessage('Password successfully changed.');
+      })
+      .catch(x => {
+        setErrorMessage('An error occurred. Try logging out and logging back in.');
+      })
+      .finally(x => {
+        setSendingChange(false);
+      });
+  }
+
+  return (
+    <Modal
+      aria-labelledby="transition-modal-title"
+      aria-describedby="transition-modal-description"
+      open={props.open}
+      onClose={x => props.setOpen(false)}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
+    >
+      <Fade in={props.open}>
+        <Card style={modalBoxStyle}>
+          <CardContent>
+            <h3>
+              Change Password
+            </h3>
+            <div style={{ color: "red", margin: "8px", minHeight: "42px" }}>{errorMessage}</div>
+            <div style={{ marginBottom: "12px" }}>
+              <TextField id="newPassword" label="New Password" variant="outlined" type="password"
+                onChange={x => setNewPassword(x.target.value)} value={newPassword} style={{ width: "100%" }}
+              />
+            </div>
+            <div style={{ marginBottom: "12px" }}>
+              <TextField id="repeatNewPassword" label="Repeat Password" variant="outlined" type="password"
+                onChange={x => setConfirmNewPassword(x.target.value)} value={confirmNewPassword}
+                style={{ width: "100%" }}
+              />
+            </div>
+            <div>
+              <Button variant="contained" disabled={errorMessage !== "" || !sendingChange}
+                onClick={handlePasswordChange}>
+                Change Password
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </Fade>
+    </Modal>
+  )
+}
 
 export default AccountDetailsGrid;
