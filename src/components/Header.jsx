@@ -3,8 +3,12 @@ import { debounce, classList } from "../utils";
 import { Icon, IconButton } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import Link from '@mui/material/Link';
+import { useAuthValue } from "./AuthContext";
 
 const Header = props => {
+  const authContext = useAuthValue();
+  const user = authContext.user;
+  const data = authContext.data;
 
   //#region Boilerplate Menu + Scroll Logic
   const [isTop, setIsTop] = useState(true);
@@ -38,8 +42,6 @@ const Header = props => {
   }, [scrollableElement, handleScrollRef]);
   //#endregion
 
-
-
   return (
     <section
       className={classList({
@@ -65,6 +67,13 @@ const Header = props => {
         </ul>
         <div className="m-auto" />
         <ul className="navigation">
+          {user === null || data?.kycStatus === "incomplete" ? <></> :
+            <li>
+              <a>
+                <Icon className="mr-4">wallet</Icon>Connect
+              </a>
+            </li>
+          }
           <li>
             <a href="/account">
               <Icon className="mr-4">person</Icon> My Account
