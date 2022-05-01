@@ -35,8 +35,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy:staging": "react-scripts build && gh-pages -d build && cross-env NODE_ENV=staging",
-    "deploy": "react-scripts build && gh-pages -d build && cross-env NODE_ENV=production",
+    "build:staging": "react-scripts build && cp -R  build ../backend/",
+    "deploy": "react-scripts build && cp -R  build ../backend/",
     "downloadURL": "node ./downloadURL.mjs"
   },
   "eslintConfig": {

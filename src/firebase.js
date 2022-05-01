@@ -12,9 +12,15 @@ if (process.env.NODE_ENV != "production") {
         appId: "1:745309283718:web:78b367dd83a12ea7f0b807"
     };
 }
+// TODO: change for production project+branch, this is still staging project
 else {
     firebaseConfig = {
-        // Something else.
+        apiKey: "AIzaSyDf9TXE-HDZxyDqFUYpKJyTFJ5YaohXMoI",
+        authDomain: "propex-staging.firebaseapp.com",
+        projectId: "propex-staging",
+        storageBucket: "propex-staging.appspot.com",
+        messagingSenderId: "745309283718",
+        appId: "1:745309283718:web:78b367dd83a12ea7f0b807"
     };
 }
 const app = initializeApp(firebaseConfig);
