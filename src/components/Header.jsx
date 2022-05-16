@@ -69,7 +69,7 @@ const Header = props => {
         <ul className="navigation">
           {user === null || data?.kycStatus === "incomplete" ? <></> :
             <li>
-              <a>
+              <a onClick={() => console.log('yog')}>
                 <Icon className="mr-4">wallet</Icon>Connect
               </a>
             </li>

@@ -25,6 +25,12 @@ import { AuthProvider } from "./components/AuthContext";
 import { auth } from './firebase'
 import { backendURL } from './contracts';
 
+import { DAppProvider, Mainnet, getDefaultProvider } from '@usedapp/core';
+
+const dappConfig = {
+  readOnlyChainId: 137
+}
+
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -55,24 +61,26 @@ function App() {
 
   return (
     <ThemeProvider theme={Theme}>
-      <GlobalCss>
-        <Scrollbar
-          className="h-full-screen scrollable-content"
-          options={{ suppressScrollX: true }}
-        >
-          <AuthProvider value={{ auth, user: currentUser, data: userData, setData: setUserData }}>
-            <BrowserRouter basename="/">
-              <Switch>
-                <Route path="/marketplace" component={MarketplacePage} />
-                <Route path="/asset/:assetId" component={AssetPage} />
-                <Route path="/account" component={AccountPage} />
-                <Route path="*" component={NotFoundPage} />
-                <Redirect path="/" exact to="marketplace" />
-              </Switch>
-            </BrowserRouter>
-          </AuthProvider>
-        </Scrollbar>
-      </GlobalCss>
+      <DAppProvider config={dappConfig}>
+        <GlobalCss>
+          <Scrollbar
+            className="h-full-screen scrollable-content"
+            options={{ suppressScrollX: true }}
+          >
+            <AuthProvider value={{ auth, user: currentUser, data: userData, setData: setUserData }}>
+              <BrowserRouter basename="/">
+                <Switch>
+                  <Route path="/marketplace" component={MarketplacePage} />
+                  <Route path="/asset/:assetId" component={AssetPage} />
+                  <Route path="/account" component={AccountPage} />
+                  <Route path="*" component={NotFoundPage} />
+                  <Redirect path="/" exact to="marketplace" />
+                </Switch>
+              </BrowserRouter>
+            </AuthProvider>
+          </Scrollbar>
+        </GlobalCss>
+      </DAppProvider>
     </ThemeProvider>
   );
 }

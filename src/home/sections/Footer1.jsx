@@ -28,16 +28,17 @@ const Footer1 = () => {
         <Grid container>
           <Grid item lg={6} md={6} sm={12}>
             <div className="p-8 h-full elevation-z3">
-              <h4 className="text-20 mb-6 relative">About Us</h4>
+              <h4 className="text-20 mb-6 relative">
+                Propex
+              </h4>
               <p className="text-inherit">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Officiis perferendis rem, aut aliquam neque nam? dolor sit amet,
-                consectetur adipisicing elit consectetur adipisicing elit.
-                Officiis perferendis rem, aut aliquam.
+                Bringing fractional investment of real world assets to the blockchain.
               </p>
-              <Button variant="contained" color="secondary">
-                Contact Us
-              </Button>
+              <a href='mailto:info@propex.uk'>
+                <Button variant="contained" color="secondary" >
+                  Contact Us
+                </Button>
+              </a>
             </div>
           </Grid>
           <Grid item lg={3} md={3} sm={12}>
@@ -47,16 +48,7 @@ const Footer1 = () => {
                 <Icon className="text-secondary">mail</Icon>
                 <div className="pl-4">
                   <h5 className="m-0 p-0 text-16">Email</h5>
-                  <p className="m-0 p-0 text-inherit">email@abc.com</p>
-                </div>
-              </div>
-              <div className="px-4 mt-8 flex items-center mx--4">
-                <Icon className="text-secondary">location_on</Icon>
-                <div className="pl-4">
-                  <h5 className="m-0 p-0 text-16">Adress</h5>
-                  <p className="m-0 p-0 text-inherit">
-                    Topoban, Akhalia Sylhet 3114, BD
-                  </p>
+                  <p className="m-0 p-0 text-inherit">info@propex.uk</p>
                 </div>
               </div>
             </div>
