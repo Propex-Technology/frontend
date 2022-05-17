@@ -33,6 +33,8 @@ export const useStyles = makeStyles(({ palette, ...theme }) => ({
   }
 }));
 
+const PRESIGNUP_MODE = process.env.NODE_ENV !== "development";
+
 // The page
 const AccountDetailsGrid = () => {
   const [open, setOpen] = useState(false);
@@ -54,77 +56,101 @@ const AccountDetailsGrid = () => {
     <div className="container">
       <ChangePasswordModal open={open} setOpen={setOpen} />
       <Grid container spacing={3}>
-        <Grid item md={4} sm={12}>
-          <Card>
-            <CardContent>
-              <h4>Your Account</h4>
-              <div className={classes.textLeft}>
-                <div style={{ height: "12px" }} />
-                <h5>Account Information</h5>
-                <LeftRightText left="Email:" right={user.email} />
-                <LeftRightText
-                  left={<div style={{ lineHeight: "40px" }}>Password:</div>}
-                  right={
-                    <IconButton size="xs" onClick={handleModalOpen}>
-                      <EditIcon />
-                    </IconButton>
-                  }
-                />
-                <div style={{ height: "12px" }} />
-                <h5>Add Wallet</h5>
-                <p>
-                  You should connect to the site with Metamask or some other
-                  Web3 provider.
-                </p>
-                <Button onClick={x => { signOut(auth); window.location.reload(); }}>
-                  Sign Out
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item container md={8} sm={12} spacing={3}>
-          <Grid item xs={12} alignItems="center">
+        <>
+          <Grid item md={4} sm={12}>
             <Card>
               <CardContent>
-                <h4>Asset Summary</h4>
-                <Grid container className={classes.textLeft}>
-                  <Grid item xs={4}>
-                    <div>Account Value:</div>
-                    <h5>$2000</h5>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <div>Properties:</div>
-                    <h5>50</h5>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <div>Total Tokens:</div>
-                    <h5>500</h5>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <h4>Assets</h4>
-                <Divider style={{ marginTop: "12px", marginBottom: "12px" }} />
-                <div className={classes.dFlex} style={{ justifyContent: "center" }}>
-                  <div className={classes.textLeft} style={{ minWidth: "160px" }}>
-                    <div>Rent to Claim (in USDC)</div>
-                    <h2>$8.03</h2>
-                  </div>
-                  <div className={clsx(classes.textRight, classes.vCenter)} style={{ marginLeft: "48px" }}>
-                    <Button variant="contained">Claim Rent</Button>
-                  </div>
+                <h4>Your Account</h4>
+                <div className={classes.textLeft}>
+                  <div style={{ height: "12px" }} />
+                  <h5>Account Information</h5>
+                  <LeftRightText left="Email:" right={user.email} />
+                  <LeftRightText
+                    left={<div style={{ lineHeight: "40px" }}>Password:</div>}
+                    right={
+                      <IconButton size="xs" onClick={handleModalOpen}>
+                        <EditIcon />
+                      </IconButton>
+                    }
+                  />
+                  <div style={{ height: "12px" }} />
+                  <h5>Add Wallet</h5>
+                  <p>
+                    You should connect to the site with Metamask or some other
+                    Web3 provider.
+                  </p>
+                  <Button onClick={x => { signOut(auth); window.location.reload(); }}>
+                    Sign Out
+                  </Button>
                 </div>
-                <Divider style={{ marginTop: "12px", marginBottom: "16px" }} />
-                {assets.map((x, i) => <AssetDisplay key={i} />)}
               </CardContent>
             </Card>
           </Grid>
-        </Grid>
+          <Grid item container md={8} sm={12} spacing={3}>
+            {PRESIGNUP_MODE ?
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <h4>You've finished KYC!</h4>
+                    <p>
+                      Thank you so much for completing the pre-signup for propex.
+                      We will reach out when the app fully launches.
+                    </p>
+                    <div style={{ fontSize: "96px" }}>
+                      🎉
+                    </div>
+                    <p>
+                      The future of real estate investments are here on propex.
+                    </p>
+                  </CardContent>
+                </Card>
+              </Grid>
+              :
+              <>
+                <Grid item xs={12} alignItems="center">
+                  <Card>
+                    <CardContent>
+                      <h4>Asset Summary</h4>
+                      <Grid container className={classes.textLeft}>
+                        <Grid item xs={4}>
+                          <div>Account Value:</div>
+                          <h5>$2000</h5>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <div>Properties:</div>
+                          <h5>50</h5>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <div>Total Tokens:</div>
+                          <h5>500</h5>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12}>
+                  <Card>
+                    <CardContent>
+                      <h4>Assets</h4>
+                      <Divider style={{ marginTop: "12px", marginBottom: "12px" }} />
+                      <div className={classes.dFlex} style={{ justifyContent: "center" }}>
+                        <div className={classes.textLeft} style={{ minWidth: "160px" }}>
+                          <div>Rent to Claim (in USDC)</div>
+                          <h2>$8.03</h2>
+                        </div>
+                        <div className={clsx(classes.textRight, classes.vCenter)} style={{ marginLeft: "48px" }}>
+                          <Button variant="contained">Claim Rent</Button>
+                        </div>
+                      </div>
+                      <Divider style={{ marginTop: "12px", marginBottom: "16px" }} />
+                      {assets.map((x, i) => <AssetDisplay key={i} />)}
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </>
+            }
+          </Grid>
+        </>
       </Grid>
     </div>
   );
