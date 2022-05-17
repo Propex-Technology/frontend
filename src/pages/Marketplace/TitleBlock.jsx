@@ -1,7 +1,9 @@
 import React from "react";
-import { Grid, Icon, Fab, darken } from "@mui/material";
+import { Grid, Icon, Fab } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import clsx from "clsx";
+import Link from '@mui/material/Link';
+import {useAuthValue} from "../../components/AuthContext";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   introWrapper: {
@@ -26,6 +28,8 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 
 const TitleBlock = () => {
   const classes = useStyles();
+  const authContext = useAuthValue();
+  console.log(authContext);
 
   return (
     <section className={clsx("section text-white")} id="intro1">
@@ -41,16 +45,21 @@ const TitleBlock = () => {
               </div>
 
               <div>
-                <Fab
-                  variant="extended"
-                  size="large"
-                  color="primary"
-                  aria-label="Buy"
-                  className="px-6 text-18 m-2"
-                >
-                  <Icon className="mr-4">person</Icon>
-                  Complete Registration
-                </Fab>
+                <Link href="account">
+                  <Fab
+                    variant="extended"
+                    size="large"
+                    color="primary"
+                    aria-label="Buy"
+                    className="px-6 text-18 m-2"
+                  >
+                    <Icon className="mr-4">person</Icon>
+                    {
+                      authContext?.data?.kycStatus === 'completed' ?
+                        "View Your Assets" : "Complete Registration"
+                    }
+                  </Fab>
+                </Link>
               </div>
             </Grid>
           </Grid>

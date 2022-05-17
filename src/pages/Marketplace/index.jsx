@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import TitleBlock from "./TitleBlock";
 import MarketCards from "./MarketCards";
 import Footer1 from "../../home/sections/Footer1";

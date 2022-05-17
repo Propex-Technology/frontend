@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { scrollTo } from "../utils";
+import React from "react";
 import Footer1 from "../home/sections/Footer1";
 import Header from "../components/Header";
 import { Button } from "@mui/material";

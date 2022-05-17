@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Skeleton } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
@@ -17,6 +17,11 @@ export const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
   wid100: {
     width: "100%"
+  },
+  skeletonCard: {
+    borderRadius: '8px',
+    width: '100%',
+    height: '360px !important'
   }
 }));
 
@@ -53,7 +58,20 @@ const AssetView = () => {
       <div className={classes.introWrapper}>
         <div className="container">
           <Grid container spacing={3}>
-            {asset == undefined || asset == 0 ? <></> :
+            {asset == undefined || asset == 0 ?
+              <>
+                <Grid item md={7} sm={12} xs={12}>
+                  <Skeleton variant='rectangle' className={classes.skeletonCard} />
+                </Grid>
+                <Grid item md={5} sm={12} xs={12}>
+                  <Skeleton variant='rectangle' className={classes.skeletonCard} />
+
+                </Grid>
+                <Grid item md={9} sm={11} xs={12}>
+                  <Skeleton variant='rectangle' className={classes.skeletonCard} />
+                </Grid>
+              </>
+              :
               isPurchasing ?
                 <PurchaseAssetCard {...asset} setIsPurchasing={setIsPurchasing} />
                 :

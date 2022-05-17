@@ -6,8 +6,6 @@ import {
   Redirect
 } from "react-router-dom";
 
-import { } from 'firebase/auth'
-
 import { ThemeProvider } from '@mui/material/styles';
 import Scrollbar from "react-perfect-scrollbar";
 import { Theme } from "./theme";

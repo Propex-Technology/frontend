@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, Card, CardContent, Button } from "@mui/material";
+import { Grid, Card, CardContent, Button, Skeleton } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import clsx from "clsx";
 import "../../styles/slant.css";
@@ -32,6 +32,11 @@ export const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
   mBtm: {
     marginBottom: "16px"
+  },
+  skeletonCard: {
+    borderRadius: '8px',
+    width: '100%',
+    height: '60% !important'
   }
 }));
 
@@ -48,7 +53,7 @@ const AccountView = props => {
   console.log(user);
 
   // Open persona client if necessary
-  if (user != null && data != null && data.kycStatus == "incomplete" && client == null) {
+  if (user != null && data != null && data.kycStatus === "incomplete" && client == null) {
     client = new Persona.Client({
       templateId: personaTemplateId,
       environment: "sandbox",
@@ -101,7 +106,8 @@ const AccountView = props => {
               <LoginCard auth={auth} />
               :
               data == null ?
-                <></> :
+                <Skeleton variant="rectangular" className={classes.skeletonCard} />
+                :
                 data.kycStatus === "incomplete" ?
                   <Card>
                     <CardContent>

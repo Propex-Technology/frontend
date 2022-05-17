@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  Skeleton
 } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import { backendURL } from "../../contracts";
@@ -30,13 +31,18 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
   pb0: {
     paddingBottom: "0px !important"
+  },
+  skeletonCard: {
+    borderRadius: '8px',
+    width: '100%',
+    height: '240px !important'
   }
 }));
 
 // TODO: remaining information
 const AssetCard = props => {
   const classes = useStyles();
-  
+
   const remainingTokens = props.totalTokens - props.purchasedTokens;
   const percentTokensLeft = 100 - (remainingTokens / props.totalTokens * 100).toFixed(0);
 
@@ -86,6 +92,7 @@ const AssetCard = props => {
 
 const MarketCards = () => {
   const classes = useStyles();
+  const skeleton = [0, 0, 0, 0, 0, 0];
 
   // Fetch Data from Backend
   let [assetList, setAssetList] = useState(undefined);
@@ -105,8 +112,12 @@ const MarketCards = () => {
         <Grid container spacing={2}>
           {
             assetList === undefined || assetList === 0 ?
-              <Grid item xs={12}><h3>Hold on... we're getting the investments for you.</h3></Grid>
-              : assetList === -1 || assetList.length == 0 ?
+              skeleton.map((x, i) => (
+                <Grid item lg={4} md={6} sm={6} xs={12} key={i}>
+                  <Skeleton variant="rectangular" className={classes.skeletonCard} />
+                </Grid>
+              ))
+              : assetList === -1 || assetList.length === 0 ?
                 <Grid item xs={12}><h3>Whoops! There was an error! Try refreshing?</h3></Grid>
                 :
                 assetList.map(asset => <AssetCard {...asset} key={asset.assetId} />)

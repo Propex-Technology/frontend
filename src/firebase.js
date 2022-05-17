@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, connectAuthEmulator} from "firebase/auth";
 
 let firebaseConfig;
-if (process.env.NODE_ENV != "production") {
+if (process.env.NODE_ENV !== "production") {
     firebaseConfig = {
         apiKey: "AIzaSyDf9TXE-HDZxyDqFUYpKJyTFJ5YaohXMoI",
         authDomain: "propex-staging.firebaseapp.com",
@@ -26,7 +26,7 @@ else {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth();
-if (process.env.NODE_ENV == "development")
+if (process.env.NODE_ENV === "development")
     connectAuthEmulator(auth, "http://localhost:9099");
 
 

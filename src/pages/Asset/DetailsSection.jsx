@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  Tab, Tabs, Grid, Button, Avatar, Link, Box
+  Tab, Tabs, Grid, Button, Avatar, Link, Box, Skeleton
 } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -18,6 +18,10 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   centered: {
     marginRight: "auto",
     marginLeft: "auto"
+  },
+  skeletonCard: {
+    borderRadius: '8px',
+    marginBottom: "12px"
   }
 }));
 
@@ -72,6 +76,14 @@ function DetailSwitch(props) {
       <SecondaryMarketTable {...props} isBuyPage={isBuyPage} setIsBuyPage={setIsBuyPage} />
     );
     default: case 1: return (
+      description === null || description === "" ?
+      <>
+        <Skeleton variant='rectangle' className={classes.skeletonCard} height='48px' width='40%' />
+        <Skeleton variant='rectangle' className={classes.skeletonCard} height='12px' width='65%' />
+        <Skeleton variant='rectangle' className={classes.skeletonCard} height='12px' width='80%' />
+        <Skeleton variant='rectangle' className={classes.skeletonCard} height='12px' width='70%' />
+      </>
+      :
       <ReactMarkdown>
         {description}
       </ReactMarkdown>

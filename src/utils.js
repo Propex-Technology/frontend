@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { getAuth, connectAuthEmulator } from "firebase/auth";
 
 export function debounce(func, wait, immediate) {
   var timeout;
@@ -120,7 +119,7 @@ export function useFetchMarkdown(url) {
 }
 
 export function useForceUpdate(){
-  const [value, setValue] = useState(0); // integer state
+  const [, setValue] = useState(0); // integer state
   return () => setValue(value => value + 1); // update the state to force render
 }
 
