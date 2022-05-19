@@ -35,7 +35,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build:staging": "react-scripts build && cp -R  build ../backend/",
+    "build:staging": "git checkout staging && react-scripts build && cp -R  build ../backend/",
+    "build:production": "git checkout production && react-scripts build && cp -R  build ../backend/",
     "deploy": "react-scripts build && cp -R  build ../backend/",
     "downloadURL": "node ./downloadURL.mjs"
   },
