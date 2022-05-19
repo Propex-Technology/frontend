@@ -1,5 +1,5 @@
 import React from "react";
-import Footer1 from "../home/sections/Footer1";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { Button } from "@mui/material";
 import Link from '@mui/material/Link';
@@ -21,7 +21,7 @@ const NotFound = () => {
           </div>
         </div>
       </div>
-      <Footer1 />
+      <Footer />
     </div>
   );
 };

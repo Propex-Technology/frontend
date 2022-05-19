@@ -1,6 +1,6 @@
 import React from "react";
 import AssetView from "./AssetView";
-import Footer1 from "../../home/sections/Footer1";
+import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 
 const Asset = () => {
@@ -8,7 +8,7 @@ const Asset = () => {
     <div className="landing">
       <Header />
       <AssetView />
-      <Footer1 />
+      <Footer />
     </div>
   );
 };

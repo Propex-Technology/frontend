@@ -19,7 +19,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const Footer1 = () => {
+const Footer = () => {
   const classes = useStyles();
 
   return (
@@ -92,4 +92,4 @@ const Footer1 = () => {
   );
 };
 
-export default Footer1;
+export default Footer;

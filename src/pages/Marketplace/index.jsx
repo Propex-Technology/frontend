@@ -1,7 +1,7 @@
 import React from "react";
 import TitleBlock from "./TitleBlock";
 import MarketCards from "./MarketCards";
-import Footer1 from "../../home/sections/Footer1";
+import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 
 const Marketplace = () => {
@@ -10,7 +10,7 @@ const Marketplace = () => {
       <Header />
       <TitleBlock />
       <MarketCards />
-      <Footer1 />
+      <Footer />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import AccountView from "./AccountView";
-import Footer1 from "../../home/sections/Footer1";
+import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 
 const Account = () => {
@@ -9,7 +9,7 @@ const Account = () => {
     <div className="landing">
       <Header />
       <AccountView />
-      <Footer1 />
+      <Footer />
     </div>
   );
 };
