@@ -1,2 +1,2 @@
 Deploy:  
-npm run build -> go to backend folder -> firebase deploy
+npm run build:staging -> go to backend folder -> firebase deploy

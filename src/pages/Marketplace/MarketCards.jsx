@@ -5,7 +5,8 @@ import {
   Card,
   CardContent,
   CardMedia,
-  Skeleton
+  Skeleton,
+  Button
 } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import { backendURL } from "../../contracts";
@@ -117,10 +118,30 @@ const MarketCards = () => {
                   <Skeleton variant="rectangular" className={classes.skeletonCard} />
                 </Grid>
               ))
-              : assetList === -1 || assetList.length === 0 ?
-                <Grid item xs={12}><h3>Whoops! There was an error! Try refreshing?</h3></Grid>
-                :
-                assetList.map(asset => <AssetCard {...asset} key={asset.assetId} />)
+              : assetList.length === 0 ?
+                <Grid item xs={12}>
+                  <Card>
+                    <CardContent>
+                      <div style={{ display: 'flex' }}>
+                        <div style={{margin: 'auto'}}>
+                          <h3>New deals are coming soon.</h3>
+                          <p>If you registered, we'll let you know when they arrive.</p>
+                          <Link href='account'>
+                            <Button>
+                              Register Now
+                            </Button>
+                          </Link>
+                        </div>
+                        <img style={{margin: 'auto'}} src='./assets/images/logos/propex-logo.png' width='50%' />
+                      </div>
+
+                    </CardContent>
+                  </Card>
+                </Grid>
+                : assetList === -1 ?
+                  <Grid item xs={12}><h3>Whoops! There was an error! Try refreshing?</h3></Grid>
+                  :
+                  assetList.map(asset => <AssetCard {...asset} key={asset.assetId} />)
           }
         </Grid>
       </div>
