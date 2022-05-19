@@ -21,6 +21,7 @@ else {
         messagingSenderId: "949602528985",
         appId: "1:949602528985:web:979ef1e79d424efba958c8"
       };
+    console.log("Production credentials applied.");
 }
 const app = initializeApp(firebaseConfig);
 
