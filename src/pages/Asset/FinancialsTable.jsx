@@ -4,11 +4,7 @@ import {
 } from '@mui/material';
 
 export function FinancialsTable(props) {
-
-  // It's confusing, I know
-  // Sell orders => buy page
-  // Buy orders => sell page
-  const fakeFinancialData = {
+  let fakeFinancialData = {
     'Token Breakdown': {
       'Token Stake Price': '$100',
       'Also Awesome': '$150'
@@ -22,6 +18,7 @@ export function FinancialsTable(props) {
       'Also Awesome': '$150'
     }
   };
+  fakeFinancialData = props.financials;
   const tableNames = Object.keys(fakeFinancialData);
 
   return (
