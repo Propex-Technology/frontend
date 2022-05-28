@@ -17,6 +17,7 @@ import MarketplacePage from "./pages/Marketplace";
 import AssetPage from "./pages/Asset";
 import NotFoundPage from "./pages/NotFound";
 import AccountPage from "./pages/Account";
+import AdminPage from "./pages/Admin";
 
 import { onAuthStateChanged } from 'firebase/auth';
 import { AuthProvider } from "./components/AuthContext";
@@ -71,6 +72,7 @@ function App() {
                   <Route path="/marketplace" component={MarketplacePage} />
                   <Route path="/asset/:assetId" component={AssetPage} />
                   <Route path="/account" component={AccountPage} />
+                  <Route path="/admin" component={AdminPage} />
                   <Route path="*" component={NotFoundPage} />
                   <Redirect path="/" exact to="marketplace" />
                 </Switch>

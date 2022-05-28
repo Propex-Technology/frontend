@@ -4,22 +4,8 @@ import {
 } from '@mui/material';
 
 export function FinancialsTable(props) {
-  let fakeFinancialData = {
-    'Token Breakdown': {
-      'Token Stake Price': '$100',
-      'Also Awesome': '$150'
-    },
-    'Expenditure': {
-      'Token Stake Price': '$100',
-      'Also Awesome': '$150'
-    },
-    'Rental Income': {
-      'Token Stake Price': '$100',
-      'Also Awesome': '$150'
-    }
-  };
-  fakeFinancialData = props.financials;
-  const tableNames = Object.keys(fakeFinancialData);
+  const financialData = props.financials;
+  const tableNames = Object.keys(financialData);
 
   return (
     tableNames.map((t, i) =>
@@ -32,7 +18,7 @@ export function FinancialsTable(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.entries(fakeFinancialData[t]).map((row, i) => <TableRow
+            {Object.entries(financialData[t]).map((row, i) => <TableRow
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }} key={i}
             >
               <TableCell component="th" scope="row">{row[0]}</TableCell>
