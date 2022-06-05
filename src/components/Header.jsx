@@ -4,6 +4,7 @@ import { Icon, IconButton } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import Link from '@mui/material/Link';
 import { useAuthValue } from "./AuthContext";
+import { useEthers } from '@usedapp/core';
 
 const Header = props => {
   const authContext = useAuthValue();
@@ -42,6 +43,13 @@ const Header = props => {
   }, [scrollableElement, handleScrollRef]);
   //#endregion
 
+  const { account, activateBrowserWallet, deactivate } = useEthers();
+
+  function onConnect() {
+    console.log('waka waka')
+    activateBrowserWallet();
+  }
+
   return (
     <section
       className={classList({
@@ -69,9 +77,16 @@ const Header = props => {
         <ul className="navigation">
           {user === null || data?.kycStatus === "incomplete" ? <></> :
             <li>
-              <a onClick={() => console.log('yog')}>
-                <Icon className="mr-4">wallet</Icon>Connect
-              </a>
+              {account == null ?
+                <a onClick={onConnect}>
+                  <Icon className="mr-4">wallet</Icon>Connect
+                </a> :
+                <a onClick={deactivate}>
+                  <Icon className="mr-4">wallet</Icon>
+                  Disconnect {account.substring(0, 6)}...
+                </a>
+              }
+
             </li>
           }
           <li>

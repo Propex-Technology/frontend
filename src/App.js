@@ -24,10 +24,14 @@ import { AuthProvider } from "./components/AuthContext";
 import { auth } from './firebase'
 import { backendURL } from './contracts';
 
-import { DAppProvider, Mainnet, getDefaultProvider } from '@usedapp/core';
+import { DAppProvider, Polygon, Mumbai } from '@usedapp/core';
 
 const dappConfig = {
-  readOnlyChainId: 137
+  readOnlyChainId: Polygon.chainId,
+  readOnlyUrls: {
+    [Polygon.chainId]: 'https://speedy-nodes-nyc.moralis.io/b680024dbed9da365ece429e/polygon/mainnet',
+    [Mumbai.chainId]: 'https://speedy-nodes-nyc.moralis.io/b680024dbed9da365ece429e/polygon/mumbai'
+  }
 }
 
 function App() {
