@@ -41,7 +41,7 @@ const TitleBlock = () => {
                 Propex Marketplace
               </h1>
               <div className="text-22 mb-10">
-                Invest in fractionalized real estate from $100.
+                Invest in fractionalized real estate from £100.
               </div>
 
               <div>

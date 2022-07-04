@@ -3,6 +3,8 @@ import {
   Button, Grid, Card, CardContent, Divider, IconButton, TextField,
   Fade, Modal, Backdrop
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import CurrencyTextField from "../../components/CurrencyTextField";
 import { makeStyles } from '@mui/styles';
 import "../../styles/slant.css";
 import { signOut } from 'firebase/auth';
@@ -11,6 +13,8 @@ import LeftRightText from "../../components/LeftRightText";
 import EditIcon from "@mui/icons-material/Edit";
 import clsx from "clsx";
 import { updatePassword } from "firebase/auth";
+import { backendURL } from '../../contracts';
+import { useEthers } from '@usedapp/core';
 
 const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 export const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -33,11 +37,30 @@ export const useStyles = makeStyles(({ palette, ...theme }) => ({
   }
 }));
 
+const modalBoxStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '350px',
+  p: 4
+};
+
 const PRESIGNUP_MODE = process.env.NODE_ENV !== "development";
+
+function toHex(stringToConvert) {
+  return stringToConvert
+    .split('')
+    .map((c) => c.charCodeAt(0).toString(16).padStart(2, '0'))
+    .join('');
+}
 
 // The page
 const AccountDetailsGrid = () => {
   const [open, setOpen] = useState(false);
+  const [balanceData, setBalanceData] = useState(null);
+  const { account } = useEthers();
+
   const classes = useStyles();
 
   const authContext = useAuthValue();
@@ -48,6 +71,21 @@ const AccountDetailsGrid = () => {
   function handleModalOpen() {
     setOpen(true);
   }
+
+  useEffect(() => {
+    if (user != null && account != null) {
+      user.getIdToken().then(token =>
+        fetch(`${backendURL}/users/balances/${account}`,
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': token
+            },
+          }))
+        .then(res => res.json())
+        .then(res => setBalanceData(res));
+    }
+  }, [account, user]);
 
   // Fake data
   const assets = [0, 1, 2, 3, 4, 5];
@@ -74,11 +112,6 @@ const AccountDetailsGrid = () => {
                     }
                   />
                   <div style={{ height: "12px" }} />
-                  <h5>Add Wallet</h5>
-                  <p>
-                    You should connect to the site with Metamask or some other
-                    Web3 provider.
-                  </p>
                   <Button onClick={x => { signOut(auth); window.location.reload(); }}>
                     Sign Out
                   </Button>
@@ -106,48 +139,23 @@ const AccountDetailsGrid = () => {
                 </Card>
               </Grid>
               :
-              <>
-                <Grid item xs={12} alignItems="center">
-                  <Card>
-                    <CardContent>
-                      <h4>Asset Summary</h4>
-                      <Grid container className={classes.textLeft}>
-                        <Grid item xs={4}>
-                          <div>Account Value:</div>
-                          <h5>$2000</h5>
-                        </Grid>
-                        <Grid item xs={4}>
-                          <div>Properties:</div>
-                          <h5>50</h5>
-                        </Grid>
-                        <Grid item xs={4}>
-                          <div>Total Tokens:</div>
-                          <h5>500</h5>
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                  </Card>
-                </Grid>
+              account == null ?
                 <Grid item xs={12}>
                   <Card>
                     <CardContent>
-                      <h4>Assets</h4>
-                      <Divider style={{ marginTop: "12px", marginBottom: "12px" }} />
-                      <div className={classes.dFlex} style={{ justifyContent: "center" }}>
-                        <div className={classes.textLeft} style={{ minWidth: "160px" }}>
-                          <div>Rent to Claim (in USDC)</div>
-                          <h2>$8.03</h2>
-                        </div>
-                        <div className={clsx(classes.textRight, classes.vCenter)} style={{ marginLeft: "48px" }}>
-                          <Button variant="contained">Claim Rent</Button>
-                        </div>
+                      <h4>Connect with your Wallet</h4>
+                      <p>
+                        Please connect to the website with your wallet to view your assets.
+                        Ownership of assets are tied to your wallet.
+                      </p>
+                      <div style={{ fontSize: "96px" }}>
+                        🎉
                       </div>
-                      <Divider style={{ marginTop: "12px", marginBottom: "16px" }} />
-                      {assets.map((x, i) => <AssetDisplay key={i} />)}
                     </CardContent>
                   </Card>
                 </Grid>
-              </>
+                :
+                <CompleteAssetView balanceData={balanceData} auth={auth} user={user} />
             }
           </Grid>
         </>
@@ -156,8 +164,171 @@ const AccountDetailsGrid = () => {
   );
 };
 
+const CompleteAssetView = ({ balanceData, auth, user }) => {
+  const classes = useStyles();
+  const { account } = useEthers();
+
+  const [rentOpen, setRentOpen] = useState(false);
+  const [sendingClaim, setSendingClaim] = useState(false);
+  const [claimAmount, setClaimAmount] = useState(0);
+  function handleModalOpen() {
+    setRentOpen(true);
+  }
+
+  let totalBalance = balanceData?.balance.GBP, totalTokens = 0;
+  balanceData?.tokenData?.forEach(x => {
+    totalBalance += x.balance * x.tokenPrice;
+    totalTokens += x.balance;
+  });
+
+  const requestRent = () => {
+    // 1. Set button to waiting...
+    setSendingClaim(true);
+
+    // 2. Ask for nonce
+    user.getIdToken()
+      .then(token =>
+        fetch(`${backendURL}/payments/withdrawNonce`, {
+          method: 'POST',
+          headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            address: account,
+            amount: claimAmount,
+            currency: 'GBP',
+            method: 'USDC'
+          })
+        }))
+      // 3. Sign nonce
+      .then(res => res.json())
+      .then(res => {
+        if(res.success && typeof(res.nonce) !== 'number') {
+          setSendingClaim(false);
+          throw new Error('Withdraw nonce failure!');
+        }
+
+        return window.ethereum.request({
+          method: 'personal_sign',
+          params: [
+            `0x${toHex(res.nonce.toString())}`,
+            account
+          ]
+        });
+      })
+      .then(async (sig) => ({ sig: sig, token: await user.getIdToken() }))
+      // 4. Send second request
+      .then(res => fetch(`${backendURL}/payments/finalizeWithdraw`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': res.token
+        },
+        body: JSON.stringify({
+          address: account,
+          signature: res.sig
+        })
+      }))
+      .then(res => res.json())
+      .then(res => {
+        console.log("FINAL RESPONSE", res);
+        //window.location.reload();
+      })
+      .catch(err => {
+        alert('Claim failed. Please try again.');
+        console.error(err);
+      })
+      .finally(() => {
+        setRentOpen(false);
+        setSendingClaim(false);
+      });
+  }
+
+  return (
+    <>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={rentOpen}
+        onClose={x => setRentOpen(false)}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={rentOpen}>
+          <Card style={modalBoxStyle}>
+            <CardContent>
+              <h3>
+                Claim Rent
+              </h3>
+              <p>Rent will be sent as USDC to your account (exchange rates apply). Minimum $1 GBP.</p>
+              <CurrencyTextField currencySymbol='£' 
+                maximumValue={balanceData?.balance.GBP.toString()} 
+                decimalPlaces={2} 
+                onChange={x => {console.log(x.target.value); setClaimAmount(x.target.value)}}
+              />
+              <div style={{marginTop: '1rem'}}>
+                <LoadingButton variant="contained"
+                  onClick={requestRent} loading={sendingClaim}
+                  disabled={claimAmount < 1 || claimAmount > totalBalance}
+                >
+                  Submit Claim
+                </LoadingButton>
+              </div>
+            </CardContent>
+          </Card>
+        </Fade>
+      </Modal>
+      <Grid item xs={12} alignItems="center">
+        <Card>
+          <CardContent>
+            <h4>Asset Summary</h4>
+            <Grid container className={classes.textLeft}>
+              <Grid item xs={4}>
+                <div>Account Value:</div>
+                <h5>£{totalBalance}</h5>
+              </Grid>
+              <Grid item xs={4}>
+                <div>Properties:</div>
+                <h5>{balanceData?.tokenData?.length}</h5>
+              </Grid>
+              <Grid item xs={4}>
+                <div>Total Tokens:</div>
+                <h5>{totalTokens}</h5>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12}>
+        <Card>
+          <CardContent>
+            <h4>Assets</h4>
+            <Divider style={{ marginTop: "12px", marginBottom: "12px" }} />
+            <div className={classes.dFlex} style={{ justifyContent: "center" }}>
+              <div className={classes.textLeft} style={{ minWidth: "160px" }}>
+                <div>Rent to Claim</div>
+                <h2>£{balanceData?.balance.GBP}</h2>
+              </div>
+              <div className={clsx(classes.textRight, classes.vCenter)} style={{ marginLeft: "48px" }}>
+                <Button variant="contained" onClick={handleModalOpen}>Claim Rent</Button>
+              </div>
+            </div>
+            <Divider style={{ marginTop: "12px", marginBottom: "16px" }} />
+            {balanceData?.tokenData?.map((x, i) => <AssetDisplay token={x} key={i} />)}
+          </CardContent>
+        </Card>
+      </Grid>
+    </>
+  );
+}
+
 // The prefab that displays the information
-const AssetDisplay = props => {
+const AssetDisplay = ({ token }) => {
   const classes = useStyles();
 
   const AssetDetail = ({ title, text }) => (
@@ -170,15 +341,14 @@ const AssetDisplay = props => {
   return (
     <div className={classes.dFlex} style={{ textAlign: "left", marginBottom: "12px" }}>
       <img className={classes.assetImage}
-        src="https://www.propertypriceadvice.co.uk/wp-content/uploads/2019/02/house-red-features-home-insurance.jpg"
+        src={token.images[0]}
       />
       <div style={{ marginLeft: "12px", width: "100%" }}>
-        <h5>1234 Chicago Way</h5>
+        <h5>{token.location.addressLine1}</h5>
         <div className={classes.dFlex}>
-          <AssetDetail title="Id" text={0} />
-          <AssetDetail title="Tokens" text={12} />
-          <AssetDetail title="Current Value" text="$1204" />
-          <AssetDetail title="Total Rent Generated" text="$12.01" />
+          <AssetDetail title="Id" text={token.assetId} />
+          <AssetDetail title="Tokens" text={token.balance} />
+          <AssetDetail title="Current Total Value" text={'£' + token.tokenPrice * token.balance} />
         </div>
       </div>
     </div>
@@ -202,14 +372,6 @@ const ChangePasswordModal = props => {
     else setErrorMessage("");
   }, [newPassword, confirmNewPassword]);
 
-  const modalBoxStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '350px',
-    p: 4
-  };
 
   const handlePasswordChange = () => {
     setSendingChange(true);

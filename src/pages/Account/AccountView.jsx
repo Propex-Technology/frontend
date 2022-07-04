@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Card, CardContent, Button, Skeleton } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import clsx from "clsx";
@@ -49,8 +49,6 @@ const AccountView = props => {
   const user = authContext.user;
   const data = authContext.data;
   console.log("AccountView data:", data);
-
-  console.log(user);
 
   // Open persona client if necessary
   if (user != null && data != null && data.kycStatus === "incomplete" && client == null) {
