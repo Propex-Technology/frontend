@@ -64,9 +64,10 @@ export function LoginCard(props) {
       })
       .catch((error) => {
         const errorCode = error.code;
-        switch (error) {
+        switch (errorCode) {
           case "auth/email-already-in-use":
             setErrorMessage("Email is already registered.");
+            break;
           case "auth/missing-email":
           case "auth/invalid-email":
             setErrorMessage("Please enter a valid email.");

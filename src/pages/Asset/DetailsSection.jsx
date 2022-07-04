@@ -7,6 +7,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { useFetchMarkdown } from '../../utils';
 import { makeStyles } from '@mui/styles';
 import { SecondaryMarketTable } from './SecondaryMarketTable';
+import { FinancialsTable } from './FinancialsTable';
 
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -29,7 +30,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 export default function DetailsSection(props) {
   const tokensSold = 0; // TODO: tokens sold in total from blockchain
   const tokensLeft = props.totalTokens - tokensSold;
-  const initialTokenSaleFinished = true;//tokensSold >= props.totalTokens;
+  const initialTokenSaleFinished = false;//tokensSold >= props.totalTokens;
   const [value, setValue] = useState(1);
 
   const handleChange = (event, newValue) => {
@@ -89,9 +90,7 @@ function DetailSwitch(props) {
       </ReactMarkdown>
     );
     case 2: return (
-      <div>
-        Financials [IN DEVELOPMENT]
-      </div>
+      <FinancialsTable {...props} />
     );
     case 3: return (
       <>
