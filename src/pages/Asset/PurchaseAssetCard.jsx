@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import {
   Grid, Card, CardHeader, CardContent, Button,
-  IconButton, RadioGroup, Radio, FormControlLabel
+  IconButton, RadioGroup, Radio, FormControlLabel,
+  Skeleton, TextField
 } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { makeStyles } from '@mui/styles';
@@ -69,6 +70,8 @@ const TosCard = props => {
   const tos = props.tos;
   const setPurchasePhase = props.setPurchasePhase;
 
+  console.log("TOS", tos);
+
   return <Card className={classes.purchaseCard}>
     <CardHeader
       action={<IconButton aria-label="go-back" onClick={() => props.setIsPurchasing(false)}>
@@ -83,9 +86,25 @@ const TosCard = props => {
             className={clsx(classes.tosScroll, "scrollable-content")}
             option={{ suppressScrollX: true }}
           >
-            <ReactMarkdown>
-              {tos}
-            </ReactMarkdown>
+            {tos == null || tos === "" ?
+              <>
+                <Skeleton variant='rectangle' height='40px'
+                  style={{ borderRadius: '8px', width: '70%', marginBottom: '16px' }}
+                />
+                <Skeleton variant='rectangle' height='30px'
+                  style={{ borderRadius: '8px', width: '85%', marginBottom: '16px' }}
+                />
+                <Skeleton variant='rectangle' height='500px'
+                  style={{ borderRadius: '8px', width: '90%', marginBottom: '16px' }}
+                />
+                <Skeleton variant='rectangle' height='500px'
+                  style={{ borderRadius: '8px', width: '90%', marginBottom: '16px' }}
+                />
+              </> :
+              <ReactMarkdown>
+                {tos}
+              </ReactMarkdown>
+            }
           </Scrollbar>
         </Grid>
         <Grid item sm={4} xs={12}>
@@ -108,6 +127,8 @@ const TransactionCard = props => {
   const [currency, setCurrency] = useState("USDC");
   const [amount, setAmount] = useState(1);
 
+  console.log("ASSET", props);
+
   return <Card className={classes.purchaseCard}>
     <CardHeader
       action={<IconButton aria-label="go-back" onClick={() => props.setIsPurchasing(false)}>
@@ -118,19 +139,22 @@ const TransactionCard = props => {
     <CardContent>
       <Grid container spacing={3}>
         <Grid item sm={6} xs={12}>
-          <p>insert cool image here</p>
+          <img src={props.images[0]} style={{ width: '100%', borderRadius: '16px' }} />
         </Grid>
         <Grid item sm={6} xs={12}>
           <p>Make your purchase using:</p>
           <span>
             <RadioGroup defaultValue="USDC" onChange={x => setCurrency(x.target.value)}>
-              <FormControlLabel value="USDC" control={<Radio />} label="USDC" />
-              <FormControlLabel value="USDT" control={<Radio />} label="USDT" />
-              <FormControlLabel value="DAI" control={<Radio />} label="DAI" />
+              <FormControlLabel value="USDC" control={<Radio />} label="USDC (exchange rates apply)" />
+              <FormControlLabel value="card" control={<Radio />} label="Credit Card" />
             </RadioGroup>
+            <TextField 
+              name='amount' type='number' label='Amount' style={{ marginTop: '12px' }}
+              onChange={v => setAmount(v.target.valueAsNumber)} 
+            />
             <div>
               <p>Total Order</p>
-              <p>$300</p>
+              <p>£{100 * amount}</p>
             </div>
           </span>
           <Button onClick={() => setPurchasePhase(1)} variant='contained'>
