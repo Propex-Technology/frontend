@@ -76,10 +76,10 @@ const AssetCard = props => {
             <SliderNoThumb
               className={clsx(classes.wid100, classes.pb0)}
               value={props.purchasedTokens}
-              max={props.remainingTokens}
+              max={props.totalTokens}
             />
             <div className={clsx("flex", classes.wid100)}>
-              <div className={classes.wid100}>{currencySymbol}{props.raiseGoal} - {percentTokensLeft}% Funded</div>
+              <div className={classes.wid100}>{currencySymbol(props.currency)}{props.raiseGoal} - {percentTokensLeft}% Funded</div>
               <div className={clsx("text-right", classes.wid100)}>
                 {remainingTokens} Tokens Left
               </div>

@@ -29,7 +29,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 
 export default function DetailsSection(props) {
   const tokensSold = 0; // TODO: tokens sold in total from blockchain
-  const tokensLeft = props.totalTokens - tokensSold;
+  const tokensLeft = props.totalTokens - props.purchasedTokens;
   const initialTokenSaleFinished = false;//tokensSold >= props.totalTokens;
   const [value, setValue] = useState(1);
 

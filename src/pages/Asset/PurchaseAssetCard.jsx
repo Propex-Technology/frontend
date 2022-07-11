@@ -137,7 +137,7 @@ const TransactionCard = props => {
   const [amount, setAmount] = useState(1);
   const { account } = useEthers();
 
-  const contract = new ethers.Contract("0x30d16D3E26E191fc831d66128653183034C1299F", abi);
+  const contract = new ethers.Contract(props.contractAddress, abi);
   const { state, send, resetState } = useContractFunction(contract, 'transfer');
   const makePurchase = () => {
     console.log("AMOUNT:" + 119000000 * amount);

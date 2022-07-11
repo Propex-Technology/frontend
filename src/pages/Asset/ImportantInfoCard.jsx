@@ -13,14 +13,13 @@ const QuestionTooltip = ({ title }) => (
   </Tooltip>
 );
 
-// TODO: Get sold tokens, your tokens from blockchain
 export default props => {
   const classes = useStyles();
   const curSybl = currencySymbol(props.currency);
-  const totalRaised = props.tokenPrice * 0; // TODO: numberOwned from blockchain
-  const tokensOwned = 0; // TODO: tokens you own from blockchain
-  const tokensSold = 0; // TODO: tokens sold in total from blockchain
+  const tokensSold = props.purchasedTokens;
+  const totalRaised = props.tokenPrice * tokensSold;
   const tokensLeft = props.totalTokens - tokensSold;
+  const tokensOwned = 0; // TODO: how many tokens you own
   const initialTokenSaleFinished = tokensSold >= props.totalTokens;
 
   return (
@@ -53,7 +52,7 @@ export default props => {
           <div style={{ height: "60px" }} />
           <SliderNoThumb
             style={{ width: "100%" }}
-            value={tokensSold}
+            value={props.purchasedTokens}
             max={props.totalTokens} />
           <LeftRightText left={`${props.totalTokens} Total Tokens`} right={`${tokensLeft} Tokens Left`} />
           <div style={{ height: "16px" }} />
