@@ -107,10 +107,12 @@ const AccountView = props => {
                 <Skeleton variant="rectangular" className={classes.skeletonCard} />
                 :
                 data.kycStatus === "incomplete" ?
-                  <Card>
+                  <Card style={{ width: '80%', padding: '5rem', margin: 'auto' }}>
                     <CardContent>
                       <h3>{receivingKYC ? "Verifying your KYC..." : "You need to finish KYC!"}</h3>
-                      <div>The government requires it to invest in real estate.</div>
+                      <div style={{ marginBottom: '1rem' }}>
+                        The government requires it to invest in real estate.
+                      </div>
                       <Button variant="contained" onClick={() => client.open()} disabled={receivingKYC}>
                         Begin KYC
                       </Button>

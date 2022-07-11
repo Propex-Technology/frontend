@@ -57,33 +57,9 @@ const Footer = () => {
             <div className="p-8 h-full elevation-z3">
               <h4 className="text-20 mb-6 relative">Disclaimer</h4>
               <p className="text-inherit">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Officiis perferendis rem, aut aliquam neque nam?
+                Propex reserves the right to make additions, deletions, or modification to 
+                the contents on the Service at any time without prior notice.
               </p>
-
-              <div className="mt-8">
-                <a href="#linkedin" className="px-2">
-                  <img
-                    className="h-24 w-24"
-                    src="./assets/images/social-linkedin.png"
-                    alt=""
-                  />
-                </a>
-                <a href="#twitter" className="px-2">
-                  <img
-                    className="h-24 w-24"
-                    src="./assets/images/social-twitter.png"
-                    alt=""
-                  />
-                </a>
-                <a href="#facebook" className="px-2">
-                  <img
-                    className="h-24 w-24"
-                    src="./assets/images/social-facebook.png"
-                    alt=""
-                  />
-                </a>
-              </div>
             </div>
           </Grid>
         </Grid>

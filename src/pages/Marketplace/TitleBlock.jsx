@@ -52,6 +52,7 @@ const TitleBlock = () => {
                     color="primary"
                     aria-label="Buy"
                     className="px-6 text-18 m-2"
+                    style={{ zIndex: 1 }}
                   >
                     <Icon className="mr-4">person</Icon>
                     {

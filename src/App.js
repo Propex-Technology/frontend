@@ -29,8 +29,8 @@ import { DAppProvider, Polygon, Mumbai } from '@usedapp/core';
 const dappConfig = {
   readOnlyChainId: Polygon.chainId,
   readOnlyUrls: {
-    [Polygon.chainId]: 'https://speedy-nodes-nyc.moralis.io/b680024dbed9da365ece429e/polygon/mainnet',
-    [Mumbai.chainId]: 'https://speedy-nodes-nyc.moralis.io/b680024dbed9da365ece429e/polygon/mumbai'
+    [Polygon.chainId]: 'https://polygon-mainnet.blastapi.io/205572af-2fcb-4612-ba1a-f0645203690b',
+    [Mumbai.chainId]: 'https://polygon-testnet.blastapi.io/205572af-2fcb-4612-ba1a-f0645203690b'
   }
 }
 
