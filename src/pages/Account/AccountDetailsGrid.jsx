@@ -155,7 +155,7 @@ const AccountDetailsGrid = () => {
                   </Card>
                 </Grid>
                 :
-                <CompleteAssetView balanceData={balanceData} auth={auth} user={user} />
+                <CompleteAssetView balanceData={balanceData} setBalanceData={setBalanceData} auth={auth} user={user} />
             }
           </Grid>
         </>
@@ -164,7 +164,7 @@ const AccountDetailsGrid = () => {
   );
 };
 
-const CompleteAssetView = ({ balanceData, auth, user }) => {
+const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
   const classes = useStyles();
   const { account } = useEthers();
 
@@ -204,7 +204,7 @@ const CompleteAssetView = ({ balanceData, auth, user }) => {
       // 3. Sign nonce
       .then(res => res.json())
       .then(res => {
-        if(res.success && typeof(res.nonce) !== 'number') {
+        if (res.success && typeof (res.nonce) !== 'number') {
           setSendingClaim(false);
           throw new Error('Withdraw nonce failure!');
         }
@@ -233,7 +233,8 @@ const CompleteAssetView = ({ balanceData, auth, user }) => {
       }))
       .then(res => res.json())
       .then(res => {
-        console.log("FINAL RESPONSE", res);
+        console.log(res);
+        setBalanceData({ ...balanceData, balance: { GBP: balanceData.balance.GBP - claimAmount } })
         //window.location.reload();
       })
       .catch(err => {
@@ -266,12 +267,12 @@ const CompleteAssetView = ({ balanceData, auth, user }) => {
                 Claim Rent
               </h3>
               <p>Rent will be sent as USDC to your account (exchange rates apply). Minimum $1 GBP.</p>
-              <CurrencyTextField currencySymbol='£' 
-                maximumValue={balanceData?.balance.GBP.toString()} 
-                decimalPlaces={2} 
-                onChange={x => {console.log(x.target.value); setClaimAmount(x.target.value)}}
+              <CurrencyTextField currencySymbol='£'
+                maximumValue={balanceData?.balance.GBP.toString()}
+                decimalPlaces={2}
+                onChange={x => { console.log(x.target.value); setClaimAmount(x.target.value) }}
               />
-              <div style={{marginTop: '1rem'}}>
+              <div style={{ marginTop: '1rem' }}>
                 <LoadingButton variant="contained"
                   onClick={requestRent} loading={sendingClaim}
                   disabled={claimAmount < 1 || claimAmount > totalBalance}
@@ -320,6 +321,15 @@ const CompleteAssetView = ({ balanceData, auth, user }) => {
             </div>
             <Divider style={{ marginTop: "12px", marginBottom: "16px" }} />
             {balanceData?.tokenData?.map((x, i) => <AssetDisplay token={x} key={i} />)}
+            {
+              balanceData?.tokenData?.length > 0 ?
+                <Divider style={{ marginTop: "16px", marginBottom: "16px" }} /> :
+                <></>
+            }
+            <p>
+              The blockchain can occassionally be slow. If you made a purchase and are
+              expecting your token, please wait 30 minutes before contacting us.
+            </p>
           </CardContent>
         </Card>
       </Grid>
