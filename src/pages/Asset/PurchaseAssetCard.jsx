@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Grid, Card, CardHeader, CardContent, Button,
   IconButton, RadioGroup, Radio, FormControlLabel,
-  Skeleton, TextField, Link, Fab, Icon
+  Skeleton, TextField, Link, Fab, Icon, Divider
 } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { makeStyles } from '@mui/styles';
@@ -18,6 +18,8 @@ import abi from 'erc-20-abi';
 import { LoadingButton } from '@mui/lab';
 import { useParams } from "react-router-dom";
 import { backendURL } from "../../contracts";
+import LeftRightText from "../../components/LeftRightText";
+import CopyIcon from '@mui/icons-material/CopyAll';
 
 export const useStyles = makeStyles(({ palette, ...theme }) => ({
   purchaseCard: {
@@ -42,7 +44,7 @@ export default props => {
   }
 
   // Purchase Phase
-  const [purchasePhase, setPurchasePhase] = useState(0);
+  const [purchasePhase, setPurchasePhase] = useState(2);//0);
 
   // Terms of Service
   const tos = useFetchMarkdown(props.tos);
@@ -62,7 +64,7 @@ export default props => {
 
 
   return (
-    <Grid item xs={12} container={notAuth} justify={notAuth ? 'center' : 'inherit'}>
+    <Grid item xs={12} container={notAuth} justify={notAuth ? 'center' : 'inherit'} height='100%' alignItems='center' >
       {notAuth ?
         <Grid item align='center' xs={12}>
           <LoginCard auth={auth} />
@@ -211,6 +213,14 @@ const TransactionCard = props => {
 const FinishedCard = props => {
   const classes = useStyles();
 
+  // middle ellipsis - http://stackoverflow.com/questions/831552/ellipsis-in-the-middle-of-a-text-mac-style
+  function start_and_end(str) {
+    if (str.length > 25) {
+      return str.substr(0, 12) + '...' + str.substr(str.length - 12, str.length);
+    }
+    return str;
+  }
+
   return <Card className={classes.purchaseCard}>
     <CardHeader
       title={"You Are Now a Proud Owner of " + props.location.addressLine1}
@@ -222,23 +232,36 @@ const FinishedCard = props => {
             Congratulations on making an investment! Your assets will appear within your account
             in the next few minutes as the blockchain updates.
           </p>
-          <div>
-            <div>Token Address:</div>
-            <div>{props.contractAddress}</div>
+          <div style={{ margin: 'auto', width: 'fit-content' }}>
+            <Link href="/account">
+              <Fab
+                variant="extended"
+                size="large"
+                color="primary"
+                aria-label="Buy"
+                className="px-6 text-18 m-2"
+                style={{ zIndex: 1 }}
+              >
+                <Icon className="mr-4">person</Icon>
+                View Your Assets
+              </Fab>
+            </Link>
           </div>
-          <Link href="/account">
-            <Fab
-              variant="extended"
-              size="large"
-              color="primary"
-              aria-label="Buy"
-              className="px-6 text-18 m-2"
-              style={{ zIndex: 1 }}
-            >
-              <Icon className="mr-4">person</Icon>
-              Your Account
-            </Fab>
-          </Link>
+          <Divider style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }} />
+          <div style={{ marginBottom: '2rem' }}>
+            <LeftRightText
+              left={<flex>Token Address: <Link><IconButton size='small'><CopyIcon fontSize="inherit" /></IconButton></Link></flex>}
+              right={<flex>{start_and_end(props.contractAddress)}</flex>}
+            />
+            <LeftRightText
+              left={<flex>Distribution Transaction: <Link><IconButton size='small'><CopyIcon fontSize="inherit" /></IconButton></Link></flex>}
+              right={<flex>{start_and_end(props.contractAddress)}</flex>}
+            />
+          </div>
+          <div style={{ margin: 'auto', width: 'fit-content' }}>
+            <Button style={{ marginRight: '6px' }}>View on Block Explorer</Button>
+            <Button style={{ marginLeft: '6px' }}>Add Token to Metamask</Button>
+          </div>
         </Grid>
         <Grid item sm={6} xs={12}>
           <img src={props.images[0]} style={{ width: '100%', borderRadius: '16px' }} />

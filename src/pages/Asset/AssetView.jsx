@@ -13,7 +13,7 @@ import { scrollTo } from "../../utils";
 
 export const useStyles = makeStyles(({ palette, ...theme }) => ({
   introWrapper: {
-    padding: "3rem 0px!important",
+    padding: "3rem 0px 0px 0px !important"//3rem 3rem 3rem 0px !important",
   },
   wid100: {
     width: "100%"
