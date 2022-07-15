@@ -38,7 +38,7 @@ export default function DetailsSection(props) {
   };
 
   return (
-    <Grid item md={9} sm={11} xs={12}>
+    <Grid item md={12} sm={12} xs={12}>
       <Tabs
         value={value}
         onChange={handleChange}

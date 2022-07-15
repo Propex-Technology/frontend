@@ -7,9 +7,12 @@ import SliderNoThumb from "../../components/SliderNoThumb";
 import { useStyles } from "./AssetView";
 import LeftRightText from "../../components/LeftRightText";
 
-const QuestionTooltip = ({ title }) => (
-  <Tooltip title={title}>
-    <QuestionIcon fontSize={"15px"} color="primary" />
+const QuestionTooltip = ({ title, className, white }) => (
+  <Tooltip title={title} className={className}>
+    {white ?
+      <QuestionIcon fontSize={"15px"} htmlColor='#fff' /> :
+      <QuestionIcon fontSize={"15px"} color='primary' />
+    }
   </Tooltip>
 );
 
@@ -28,28 +31,26 @@ export default props => {
         <CardContent>
           <h3>{props.location.addressLine1}</h3>
           <div>{props.location.city}, {props.location.province} {props.location.zip}</div>
-          <div className={clsx("flex", classes.wid100)}>
-            <div className={classes.wid100}>
-              {props.cashPayout}% CoC
-              <QuestionTooltip title="Yearly cash you gain in relation to investment." />
-            </div>
-            <div className={clsx("text-right", classes.wid100)}>
-              <Tooltip title="Estimated yearly housing price increase + CoC.">
-                <QuestionIcon fontSize={"15px"} color="primary" />
-              </Tooltip>
-              {props.estimatedROI}% ROI
-            </div>
+          <div className={clsx('flex', classes.wid100)}>
+            <Card className={clsx(classes.littleCard)} elevation={0}>
+              <b className={classes.littleCardText}>{props.cashPayout}% CoC</b>
+              <QuestionTooltip title="Yearly cash you gain in relation to investment." className={classes.bottomRight} white />
+            </Card>
+            <Card className={classes.littleCard} elevation={0}>
+              <b className={classes.littleCardText}>{props.estimatedROI}% ROI</b>
+              <QuestionTooltip title="Estimated yearly housing price increase + CoC." className={classes.bottomRight} white />
+            </Card>
           </div>
           <LeftRightText
-            left={<div>On-Chain Raised: <QuestionTooltip title="Amount of money raised so far on Propex." /></div>}
+            left={<div><QuestionTooltip title="Amount of money raised so far on Propex." /> On-Chain Raised:</div>}
             right={curSybl + totalRaised}
           />
           <LeftRightText
-            left={<div>Off-Chain Raised:<QuestionTooltip title="Amount of money raised off Propex." /></div>}
+            left={<div><QuestionTooltip title="Amount of money raised off Propex." /> Off-Chain Raised:</div>}
             right={curSybl + props.offPlatformRaise}
           />
-          <LeftRightText left="Tokens Owned:" right={tokensOwned} />
-          <div style={{ height: "60px" }} />
+          {/*<LeftRightText left="Tokens Owned:" right={tokensOwned} />*/}
+          <div style={{ height: "8px" }} />
           <SliderNoThumb
             style={{ width: "100%" }}
             value={props.purchasedTokens}

@@ -22,6 +22,24 @@ export const useStyles = makeStyles(({ palette, ...theme }) => ({
     borderRadius: '8px',
     width: '100%',
     height: '360px !important'
+  },
+  littleCard: {
+    padding: '12px',
+    margin: 'auto',
+    marginTop: '12px',
+    marginBottom: '12px',
+    backgroundColor: '#3347ff !important',
+  },
+  bottomRight: {
+    position: 'relative',
+    bottom: '-14px',
+    right: '-8px'
+  },
+  littleCardText: {
+    position: 'relative',
+    left: '5px',
+    fontSize: '20px',
+    color: 'white'
   }
 }));
 
