@@ -1,0 +1,42 @@
+.scaleup {
+    transition: transform 0.5s !important;
+}
+
+.scaleup:hover.su-0 {
+    transform: scale(1.05) rotate(2deg) !important;
+}
+
+.scaleup:hover.su-1 {
+    transform: scale(1.05) rotate(-1deg) !important;
+}
+
+.scaleup:hover.su-2 {
+    transform: scale(1.05) rotate(-2deg) !important;
+}
+
+.scaleup:hover.su-3 {
+    transform: scale(1.05) rotate(1deg) !important;
+}
+
+.blurOnHover {
+    transition: filter 0.3s !important;
+}
+
+.scaleup:hover>.blurOnHover  {
+    filter: blur(3px);
+}
+
+.scaleup:hover>.blurOnHover:hover  {
+    filter: blur(0px);
+}
+
+/*
+
+.mediaSibling {
+    opacity: 0.5;
+}
+
+.blurOnHover:hover+.mediaSibling {
+    opacity: 1;
+}
+*/

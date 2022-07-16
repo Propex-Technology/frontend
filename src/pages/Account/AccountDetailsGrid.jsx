@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import {
   Button, Grid, Card, CardContent, Divider, IconButton, TextField,
-  Fade, Modal, Backdrop
+  Fade, Modal, Backdrop, Tab, Tabs, CardMedia, Link
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import CurrencyTextField from "../../components/CurrencyTextField";
 import { makeStyles } from '@mui/styles';
-import "../../styles/slant.css";
+import EditIcon from "@mui/icons-material/Edit";
 import { signOut } from 'firebase/auth';
 import { useAuthValue } from "../../components/AuthContext";
 import LeftRightText from "../../components/LeftRightText";
-import EditIcon from "@mui/icons-material/Edit";
-import clsx from "clsx";
+import CurrencyTextField from "../../components/CurrencyTextField";
 import { updatePassword } from "firebase/auth";
 import { backendURL } from '../../contracts';
 import { useEthers } from '@usedapp/core';
+import clsx from "clsx";
+import "../../styles/slant.css";
+import './hoverEffects.css';
 
 const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 export const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -171,6 +172,8 @@ const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
   const [rentOpen, setRentOpen] = useState(false);
   const [sendingClaim, setSendingClaim] = useState(false);
   const [claimAmount, setClaimAmount] = useState(0);
+  const [tabState, setTabState] = useState(0);
+
   function handleModalOpen() {
     setRentOpen(true);
   }
@@ -249,62 +252,8 @@ const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
 
   return (
     <>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={rentOpen}
-        onClose={x => setRentOpen(false)}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={rentOpen}>
-          <Card style={modalBoxStyle}>
-            <CardContent>
-              <h3>
-                Claim Rent
-              </h3>
-              <p>Rent will be sent as USDC to your account (exchange rates apply). Minimum $1 GBP.</p>
-              <CurrencyTextField currencySymbol='£'
-                maximumValue={balanceData?.balance.GBP.toString()}
-                decimalPlaces={2}
-                onChange={x => { console.log(x.target.value); setClaimAmount(x.target.value) }}
-              />
-              <div style={{ marginTop: '1rem' }}>
-                <LoadingButton variant="contained"
-                  onClick={requestRent} loading={sendingClaim}
-                  disabled={claimAmount < 1 || claimAmount > totalBalance}
-                >
-                  Submit Claim
-                </LoadingButton>
-              </div>
-            </CardContent>
-          </Card>
-        </Fade>
-      </Modal>
-      <Grid item xs={12} alignItems="center">
-        <Card>
-          <CardContent>
-            <h4>Asset Summary</h4>
-            <Grid container className={classes.textLeft}>
-              <Grid item xs={4}>
-                <div>Account Value:</div>
-                <h5>£{totalBalance}</h5>
-              </Grid>
-              <Grid item xs={4}>
-                <div>Properties:</div>
-                <h5>{balanceData?.tokenData?.length}</h5>
-              </Grid>
-              <Grid item xs={4}>
-                <div>Total Tokens:</div>
-                <h5>{totalTokens}</h5>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-      </Grid>
+      {rentModal()}
+      {accountSummary()}
       <Grid item xs={12}>
         <Card>
           <CardContent>
@@ -323,7 +272,16 @@ const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
               </div>
             </div>
             <Divider style={{ marginTop: "12px", marginBottom: "16px" }} />
-            {balanceData?.tokenData?.map((x, i) => <AssetDisplay token={x} key={i} />)}
+            <Tabs value={tabState} onChange={(e, v) => setTabState(v)} style={{ marginBottom: '1rem' }}>
+              <Tab label='Cards' value={0} />
+              <Tab label='List' value={1} />
+            </Tabs>
+            {tabState === 0 ?
+              <Grid container spacing={3}>
+                {balanceData?.tokenData?.map((x, i) => <AssetCardDisplay token={x} key={i} />)}
+              </Grid> :
+              balanceData?.tokenData?.map((x, i) => <AssetListDisplay token={x} key={i} />)
+            }
             {
               balanceData?.tokenData?.length > 0 ?
                 <Divider style={{ marginTop: "16px", marginBottom: "16px" }} /> :
@@ -338,10 +296,73 @@ const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
       </Grid>
     </>
   );
+
+  function accountSummary() {
+    return <Grid item xs={12} alignItems="center">
+      <Card>
+        <CardContent>
+          <h4>Asset Summary</h4>
+          <Grid container className={classes.textLeft}>
+            <Grid item xs={4}>
+              <div>Account Value:</div>
+              <h5>£{totalBalance}</h5>
+            </Grid>
+            <Grid item xs={4}>
+              <div>Properties:</div>
+              <h5>{balanceData?.tokenData?.length}</h5>
+            </Grid>
+            <Grid item xs={4}>
+              <div>Total Tokens:</div>
+              <h5>{totalTokens}</h5>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+    </Grid>;
+  }
+
+  function rentModal() {
+    return <Modal
+      aria-labelledby="transition-modal-title"
+      aria-describedby="transition-modal-description"
+      open={rentOpen}
+      onClose={x => setRentOpen(false)}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
+    >
+      <Fade in={rentOpen}>
+        <Card style={modalBoxStyle}>
+          <CardContent>
+            <h3>
+              Claim Rent
+            </h3>
+            <p>Rent will be sent as USDC to your account (exchange rates apply). Minimum $1 GBP.</p>
+            <CurrencyTextField currencySymbol='£'
+              maximumValue={balanceData?.balance.GBP.toString()}
+              decimalPlaces={2}
+              onChange={x => { console.log(x.target.value); setClaimAmount(x.target.value) }}
+            />
+            <div style={{ marginTop: '1rem' }}>
+              <LoadingButton variant="contained"
+                onClick={requestRent} loading={sendingClaim}
+                disabled={claimAmount < 1 || claimAmount > totalBalance}
+              >
+                Submit Claim
+              </LoadingButton>
+            </div>
+          </CardContent>
+        </Card>
+      </Fade>
+    </Modal>;
+  }
+
 }
 
 // The prefab that displays the information
-const AssetDisplay = ({ token }) => {
+const AssetListDisplay = ({ token }) => {
   const classes = useStyles();
 
   const AssetDetail = ({ title, text }) => (
@@ -365,6 +386,57 @@ const AssetDisplay = ({ token }) => {
         </div>
       </div>
     </div>
+  );
+};
+
+// The prefab that displays the information
+const AssetCardDisplay = ({ token }) => {
+
+  const HEIGHT_NUM = 255;
+  const MEDIA_HEIGHT = HEIGHT_NUM + 'px';
+
+  return (
+    <Grid item md={4} sm={4} xs={12} >
+      <Card className={`scaleup su-${(Math.random() * 10000).toFixed(0) % 4}`}>
+        <CardMedia
+          component="img"
+          height={MEDIA_HEIGHT}
+          image={token.images[0]}
+          alt={token.location.addressLine1}
+          className='blurOnHover'
+        />
+        <div style={{ position: 'relative', height: '0px', top: '-' + MEDIA_HEIGHT }} className='mediaSibling'>
+          <div style={{ marginTop: 'auto' }}>
+            <Link href={"/asset/" + token.assetId}>
+              <Button style={{ marginTop: '4px', marginRight: '6px', color: 'white' }}>Sell</Button>
+            </Link>
+            <Link href={"/asset/" + token.assetId}>
+              <Button style={{ marginTop: '4px', color: 'white' }}>View</Button>
+            </Link>
+          </div>
+        </div>
+        <div style={{ position: 'relative', height: '0px', top: '-28px' }}>
+          <div style={{ backgroundColor: '#ffffff88', paddingTop: '4px', paddingBottom: '4px' }}>
+            {token.balance} Tokens / {'£' + token.tokenPrice * token.balance}
+          </div>
+        </div>
+      </Card>
+    </Grid>
+    /*
+    <div className={classes.dFlex} style={{ textAlign: "left", marginBottom: "12px" }}>
+      <img className={classes.assetImage}
+        src={token.images[0]}
+      />
+      <div style={{ marginLeft: "12px", width: "100%" }}>
+        <h5>{token.location.addressLine1}</h5>
+        <div className={classes.dFlex}>
+          <AssetDetail title="Id" text={token.assetId} />
+          <AssetDetail title="slkflaksjdf" text={token.balance} />
+          <AssetDetail title="Current Total Value" text={'£' + token.tokenPrice * token.balance} />
+        </div>
+      </div>
+    </div>
+    */
   );
 };
 
