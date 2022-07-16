@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Grid, Card, CardHeader, CardContent, Button,
   IconButton, RadioGroup, Radio, FormControlLabel,
-  Skeleton, TextField, Link, Fab, Icon, Divider
+  Skeleton, TextField, Link, Fab, Icon, Divider, Typography
 } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { makeStyles } from '@mui/styles';
@@ -224,10 +224,12 @@ const FinishedCard = props => {
   return <Card className={classes.purchaseCard}>
     <CardHeader
       title={"You Are Now a Proud Owner of " + props.location.addressLine1}
-      subheader="Your Assets Will Appear in the Next Minute" />
+      //subheader="Your Assets Will Appear in the Next Minute"
+       />
     <CardContent>
       <Grid container spacing={3}>
         <Grid item sm={6} xs={12}>
+          <h4 style={{textAlign: 'center'}}>Your Assets Will Appear in the Next Minute</h4>
           <p>
             Congratulations on making an investment! Your assets will appear within your account
             in the next few minutes as the blockchain updates.

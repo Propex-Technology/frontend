@@ -318,6 +318,9 @@ const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
               <div className={clsx(classes.textRight, classes.vCenter)} style={{ marginLeft: "48px" }}>
                 <Button variant="contained" onClick={handleModalOpen}>Claim Rent</Button>
               </div>
+              <div className={clsx(classes.textRight, classes.vCenter)} style={{ marginLeft: "48px" }}>
+                <Button variant="contained" onClick={handleModalOpen}>Reinvest</Button>
+              </div>
             </div>
             <Divider style={{ marginTop: "12px", marginBottom: "16px" }} />
             {balanceData?.tokenData?.map((x, i) => <AssetDisplay token={x} key={i} />)}
