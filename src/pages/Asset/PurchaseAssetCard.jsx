@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Grid, Card, CardHeader, CardContent, Button,
   IconButton, RadioGroup, Radio, FormControlLabel,
-  Skeleton, TextField, Link, Fab, Icon, Divider, Typography
+  Skeleton, TextField, Link, Fab, Icon, Divider
 } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { makeStyles } from '@mui/styles';
@@ -17,7 +17,7 @@ import * as ethers from "ethers";
 import abi from 'erc-20-abi';
 import { LoadingButton } from '@mui/lab';
 import { useParams } from "react-router-dom";
-import { backendURL } from "../../contracts";
+import { backendURL, blockScanner } from "../../contracts";
 import LeftRightText from "../../components/LeftRightText";
 import CopyIcon from '@mui/icons-material/CopyAll';
 
@@ -44,7 +44,8 @@ export default props => {
   }
 
   // Purchase Phase
-  const [purchasePhase, setPurchasePhase] = useState(2);//0);
+  const [purchasePhase, setPurchasePhase] = useState(0);
+  const [transaction, setTransaction] = useState(null);
 
   // Terms of Service
   const tos = useFetchMarkdown(props.tos);
@@ -54,9 +55,9 @@ export default props => {
       case 0:
         return <TosCard {...props} tos={tos} setPurchasePhase={setPurchasePhase} />
       case 1:
-        return <TransactionCard {...props} setPurchasePhase={setPurchasePhase} />
+        return <TransactionCard {...props} setPurchasePhase={setPurchasePhase} setTransaction={setTransaction} />
       case 2:
-        return <FinishedCard {...props} />
+        return <FinishedCard {...props} transaction={transaction} />
       default:
         return <></>
     }
@@ -131,7 +132,6 @@ const TosCard = props => {
 
 const TransactionCard = props => {
   const classes = useStyles();
-  const tos = props.tos;
   const setPurchasePhase = props.setPurchasePhase;
   const { assetId } = useParams();
 
@@ -166,6 +166,7 @@ const TransactionCard = props => {
         .then(res => res.json())
         .then(res => {
           console.log(res);
+          props.setTransaction(res.transaction);
           setPurchasePhase(2);
         });
     }
@@ -257,11 +258,13 @@ const FinishedCard = props => {
             />
             <LeftRightText
               left={<flex>Distribution Transaction: <Link><IconButton size='small'><CopyIcon fontSize="inherit" /></IconButton></Link></flex>}
-              right={<flex>{start_and_end(props.contractAddress)}</flex>}
+              right={<flex>{start_and_end(props.transaction.hash)}</flex>}
             />
           </div>
           <div style={{ margin: 'auto', width: 'fit-content' }}>
-            <Button style={{ marginRight: '6px' }}>View on Block Explorer</Button>
+            <Link href={blockScanner + '/tx/' + props.transaction.hash} target='_blank'>
+              <Button style={{ marginRight: '6px' }}>View on Block Explorer</Button>
+            </Link>
             <Button style={{ marginLeft: '6px' }}>Add Token to Metamask</Button>
           </div>
         </Grid>

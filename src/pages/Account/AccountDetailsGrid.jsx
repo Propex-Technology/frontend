@@ -11,7 +11,7 @@ import { useAuthValue } from "../../components/AuthContext";
 import LeftRightText from "../../components/LeftRightText";
 import CurrencyTextField from "../../components/CurrencyTextField";
 import { updatePassword } from "firebase/auth";
-import { backendURL } from '../../contracts';
+import { backendURL, blockScanner } from '../../contracts';
 import { useEthers } from '@usedapp/core';
 import clsx from "clsx";
 import "../../styles/slant.css";
@@ -84,7 +84,12 @@ const AccountDetailsGrid = () => {
             },
           }))
         .then(res => res.json())
-        .then(res => setBalanceData(res));
+        .then(res => { 
+          console.log(res);
+          const tokenDataFiltered = res.tokenData.filter(function(val) { return val !== null; });
+          res.tokenData = tokenDataFiltered;
+          setBalanceData(res);
+        });
     }
   }, [account, user]);
 
@@ -173,6 +178,7 @@ const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
   const [sendingClaim, setSendingClaim] = useState(false);
   const [claimAmount, setClaimAmount] = useState(0);
   const [tabState, setTabState] = useState(0);
+  const [claimTx, setClaimTx] = useState(null);
 
   function handleModalOpen() {
     setRentOpen(true);
@@ -180,6 +186,7 @@ const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
 
   let totalBalance = balanceData?.balance.GBP, totalTokens = 0;
   balanceData?.tokenData?.forEach(x => {
+    if(x == null) return;
     totalBalance += x.balance * x.tokenPrice;
     totalTokens += x.balance;
   });
@@ -237,15 +244,14 @@ const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
       .then(res => res.json())
       .then(res => {
         console.log(res);
-        setBalanceData({ ...balanceData, balance: { GBP: balanceData.balance.GBP - claimAmount } })
-        //window.location.reload();
+        setBalanceData({ ...balanceData, balance: { GBP: balanceData.balance.GBP - claimAmount } });
+        setClaimTx(res);
       })
       .catch(err => {
         alert('Claim failed. Please try again.');
         console.error(err);
       })
       .finally(() => {
-        setRentOpen(false);
         setSendingClaim(false);
       });
   }
@@ -290,6 +296,10 @@ const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
             <p>
               The blockchain can occassionally be slow. If you made a purchase and are
               expecting your token, please wait 30 minutes before contacting us.
+              All investments including those on Propex are volatile. Displayed ROIs and
+              CoC returns are estimations and are baselines for an agreement between the
+              lister and the investor. Unpredictable factors such as inflation, black swan events,
+              and market cycles dictate the returns Propex can distribute.
             </p>
           </CardContent>
         </Card>
@@ -326,7 +336,7 @@ const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
       open={rentOpen}
-      onClose={x => setRentOpen(false)}
+      onClose={x => { setClaimTx(null); setRentOpen(false); }}
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
@@ -340,19 +350,34 @@ const CompleteAssetView = ({ balanceData, setBalanceData, auth, user }) => {
               Claim Rent
             </h3>
             <p>Rent will be sent as USDC to your account (exchange rates apply). Minimum $1 GBP.</p>
-            <CurrencyTextField currencySymbol='£'
-              maximumValue={balanceData?.balance.GBP.toString()}
-              decimalPlaces={2}
-              onChange={x => { console.log(x.target.value); setClaimAmount(x.target.value) }}
-            />
-            <div style={{ marginTop: '1rem' }}>
-              <LoadingButton variant="contained"
-                onClick={requestRent} loading={sendingClaim}
-                disabled={claimAmount < 1 || claimAmount > totalBalance}
-              >
-                Submit Claim
-              </LoadingButton>
-            </div>
+            {
+              claimTx === null ?
+                <>
+                  <CurrencyTextField currencySymbol='£'
+                    maximumValue={balanceData?.balance.GBP.toString()}
+                    decimalPlaces={2}
+                    onChange={x => { console.log(x.target.value); setClaimAmount(x.target.value) }}
+                  />
+                  <div style={{ marginTop: '1rem' }}>
+                    <LoadingButton variant="contained"
+                      onClick={requestRent} loading={sendingClaim}
+                      disabled={claimAmount < 1 || claimAmount > totalBalance}
+                    >
+                      Submit Claim
+                    </LoadingButton>
+                  </div>
+                </> :
+                <div style={{ marginTop: '1rem' }}>
+                  <Link href={blockScanner + '/tx/' + claimTx.hash} target='_blank'>
+                    <Button style={{ marginRight: '6px' }}>View on Block Explorer</Button>
+                  </Link>
+                  <Divider style={{ marginTop: "16px", marginBottom: "16px" }} />
+                  <p>
+                    The blockchain can occassionally be slow. Please wait 30 minutes before 
+                    contacting us about an on-chain withdrawl.
+                  </p>
+                </div>
+            }
           </CardContent>
         </Card>
       </Fade>
@@ -422,21 +447,6 @@ const AssetCardDisplay = ({ token }) => {
         </div>
       </Card>
     </Grid>
-    /*
-    <div className={classes.dFlex} style={{ textAlign: "left", marginBottom: "12px" }}>
-      <img className={classes.assetImage}
-        src={token.images[0]}
-      />
-      <div style={{ marginLeft: "12px", width: "100%" }}>
-        <h5>{token.location.addressLine1}</h5>
-        <div className={classes.dFlex}>
-          <AssetDetail title="Id" text={token.assetId} />
-          <AssetDetail title="slkflaksjdf" text={token.balance} />
-          <AssetDetail title="Current Total Value" text={'£' + token.tokenPrice * token.balance} />
-        </div>
-      </div>
-    </div>
-    */
   );
 };
 
