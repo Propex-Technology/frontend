@@ -19,7 +19,7 @@ import { LoadingButton } from '@mui/lab';
 import { useParams } from "react-router-dom";
 import { backendURL, blockScanner } from "../../contracts";
 import LeftRightText from "../../components/LeftRightText";
-import CopyIcon from '@mui/icons-material/CopyAll';
+import CopyButton from "../../components/CopyButton";
 
 export const useStyles = makeStyles(({ palette, ...theme }) => ({
   purchaseCard: {
@@ -222,15 +222,41 @@ const FinishedCard = props => {
     return str;
   }
 
+  // https://www.youtube.com/watch?v=aYRxcxMpVNU
+  async function addTokenToMetamask() {
+    try {
+      const wasAdded = await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address: props.contractAddress,
+            symbol: 'PPX-' + props.assetId,
+            decimals: 0,
+            image: 'https://cdn.discordapp.com/attachments/757328909686669362/999539148262215790/favicon.png',
+          },
+        },
+      });
+
+      if (wasAdded) {
+        console.log('Thanks for your interest!');
+      } else {
+        console.log('Coin has not been added');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return <Card className={classes.purchaseCard}>
     <CardHeader
       title={"You Are Now a Proud Owner of " + props.location.addressLine1}
-      //subheader="Your Assets Will Appear in the Next Minute"
-       />
+    //subheader="Your Assets Will Appear in the Next Minute"
+    />
     <CardContent>
       <Grid container spacing={3}>
         <Grid item sm={6} xs={12}>
-          <h4 style={{textAlign: 'center'}}>Your Assets Will Appear in the Next Minute</h4>
+          <h4 style={{ textAlign: 'center' }}>Your Assets Will Appear in the Next Minute</h4>
           <p>
             Congratulations on making an investment! Your assets will appear within your account
             in the next few minutes as the blockchain updates.
@@ -253,11 +279,11 @@ const FinishedCard = props => {
           <Divider style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }} />
           <div style={{ marginBottom: '2rem' }}>
             <LeftRightText
-              left={<flex>Token Address: <Link><IconButton size='small'><CopyIcon fontSize="inherit" /></IconButton></Link></flex>}
+              left={<flex>Token Address: <CopyButton copyText={props.contractAddress} /></flex>}
               right={<flex>{start_and_end(props.contractAddress)}</flex>}
             />
             <LeftRightText
-              left={<flex>Distribution Transaction: <Link><IconButton size='small'><CopyIcon fontSize="inherit" /></IconButton></Link></flex>}
+              left={<flex>Distribution Transaction: <CopyButton copyText={props.transaction.hash} /></flex>}
               right={<flex>{start_and_end(props.transaction.hash)}</flex>}
             />
           </div>
@@ -265,7 +291,9 @@ const FinishedCard = props => {
             <Link href={blockScanner + '/tx/' + props.transaction.hash} target='_blank'>
               <Button style={{ marginRight: '6px' }}>View on Block Explorer</Button>
             </Link>
-            <Button style={{ marginLeft: '6px' }}>Add Token to Metamask</Button>
+            <Button style={{ marginLeft: '6px' }} onClick={addTokenToMetamask}>
+              Add Token to Metamask
+            </Button>
           </div>
         </Grid>
         <Grid item sm={6} xs={12}>
